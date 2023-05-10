@@ -24,6 +24,8 @@ static const struct in_default_bind in_sdl_defbinds[] = {
 	{ SDLK_TAB,       IN_BINDTYPE_PLAYER12, RETRO_DEVICE_ID_JOYPAD_L2 },
 	{ SDLK_BACKSPACE, IN_BINDTYPE_PLAYER12, RETRO_DEVICE_ID_JOYPAD_R2 },
 	{ SDLK_ESCAPE,    IN_BINDTYPE_EMU, EACTION_MENU },
+	{ SDLK_LSUPER,    IN_BINDTYPE_EMU, EACTION_NONE },
+	{ SDLK_RSUPER,    IN_BINDTYPE_EMU, EACTION_NONE },
 	{ 0, 0, 0 }
 };
 
@@ -70,6 +72,8 @@ static const char * const in_sdl_key_names[SDLK_LAST] = {
 	[SDLK_TAB]        = "L2",
 	[SDLK_BACKSPACE]  = "R2",
 	[SDLK_ESCAPE]     = "MENU",
+	[SDLK_LSUPER]     = "VOLDN",
+	[SDLK_RSUPER]     = "VOLUP",
 	// [SDLK_POWER]      = "POWER",
 	[SDLK_1]          = "MENU+UP",
 	[SDLK_2]          = "MENU+DOWN",
@@ -85,6 +89,8 @@ static const char * const in_sdl_key_names[SDLK_LAST] = {
 	[SDLK_w]          = "MENU+R",
 	[SDLK_o]          = "MENU+L2",
 	[SDLK_p]          = "MENU+R2",
+	[SDLK_WORLD_50]   = "MENU+VOLDN",
+	[SDLK_WORLD_51]   = "MENU+VOLUP",
 };
 
 static const struct mod_keymap in_sdl_mod_keymap[] = {
@@ -102,6 +108,8 @@ static const struct mod_keymap in_sdl_mod_keymap[] = {
 	{ SDLK_t,         SDLK_w },
 	{ SDLK_TAB,       SDLK_o },
 	{ SDLK_BACKSPACE, SDLK_p },
+	{ SDLK_LSUPER,    SDLK_WORLD_50 },
+	{ SDLK_RSUPER,    SDLK_WORLD_51 },
 };
 
 static const struct in_pdata in_sdl_platform_data = {
