@@ -72,7 +72,7 @@ void options_init(const struct retro_core_option_definition *defs) {
 	}
 
 	for (i = 0; i < core_options.len; i++) {
-		int j, len;
+		int j, k, len;
 		const struct retro_core_option_definition *def = &defs[i];
 		struct core_option_entry *entry = &core_options.entries[i];
 		const struct core_override_option *override = get_option_override(def->key);
@@ -134,35 +134,40 @@ void options_init(const struct retro_core_option_definition *defs) {
 			return;
 		}
 
-		for (j = 0; def->values[j].value; j++) {
+		for (j = 0, k = 0; def->values[j].value; j++) {
 			const char *value = CORE_OVERRIDE(override, options[j].value, def->values[j].value);
 			size_t value_len = strlen(value);
 			const char *label = CORE_OVERRIDE(override, options[j].label, def->values[j].label);
 			size_t label_len = 0;
 
-			entry->values[j] = (char *)calloc(value_len + 1, sizeof(char));
-			if (!entry->values[j]) {
+			if (label && label[0] == 0) {
+				continue;
+			}
+
+			entry->values[k] = (char *)calloc(value_len + 1, sizeof(char));
+			if (!entry->values[k]) {
 				PA_ERROR("Error allocating memory for option values");
 				options_free();
 				return;
 			}
 
-			strncpy(entry->values[j], value, value_len);
+			strncpy(entry->values[k], value, value_len);
 
 			if (label) {
 				label_len = strlen(label);
 
-				entry->labels[j] = (char *)calloc(label_len + 1, sizeof(char));
-				if (!entry->labels[j]) {
+				entry->labels[k] = (char *)calloc(label_len + 1, sizeof(char));
+				if (!entry->labels[k]) {
 					PA_ERROR("Error allocating memory for option labels");
 					options_free();
 					return;
 				}
 
-				strncpy(entry->labels[j], label, label_len);
+				strncpy(entry->labels[k], label, label_len);
 			} else {
-				entry->labels[j] = entry->values[j];
+				entry->labels[k] = entry->values[k];
 			}
+			k++;
 		}
 
 		entry->value = options_default_index(
