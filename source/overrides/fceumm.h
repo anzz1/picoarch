@@ -6,12 +6,24 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.desc = "RAM Fill (Restart)",
 	},
 	{
-		.key = "fceumm_overscan_h",
-		.desc = "Crop Horz. Overscan",
+		.key = "fceumm_overscan_h_left",
+		.desc = "Crop Left Overscan",
+		.default_value = "8",
 	},
 	{
-		.key = "fceumm_overscan_v",
-		.desc = "Crop Vert. Overscan",
+		.key = "fceumm_overscan_h_right",
+		.desc = "Crop Right Overscan",
+		.default_value = "8",
+	},
+	{
+		.key = "fceumm_overscan_v_top",
+		.desc = "Crop Top Overscan",
+		.default_value = "8",
+	},
+	{
+		.key = "fceumm_overscan_v_bottom",
+		.desc = "Crop Btm Overscan",
+		.default_value = "8",
 	},
 	{
 		.key = "fceumm_up_down_allowed",
@@ -20,6 +32,15 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 	{
 		.key = "fceumm_turbo_delay",
 		.desc = "Turbo Delay Frames",
+	},
+	{
+		.key = "fceumm_turbo_enable",
+		.options = {
+			{ "None", "disabled" },
+			{ "Player 1", "enabled" },
+			{ "Player 2", "" },
+			{ "Both", "" },
+		}
 	},
 	{
 		.key = "fceumm_apu_1",
@@ -50,8 +71,16 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.desc = "Show Snd Options",
 	},
 	{
+		.key = "fceumm_swapduty",
+		.desc = "Famiclone Audio",
+	},
+	{
 		.key = "fceumm_aspect",
 		.default_value = "Pixel",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_arkanoid_mode",
 		.blocked = true
 	},
 	{
@@ -59,7 +88,7 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.blocked = true
 	},
 	{
-		.key = "fceumm_zapper_mode",
+		.key = "fceumm_mouse_sensitivity",
 		.blocked = true
 	},
 	{
@@ -67,7 +96,19 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.blocked = true
 	},
 	{
+		.key = "fceumm_zapper_mode",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_zapper_sensor",
+		.blocked = true
+	},
+	{
 		.key = "fceumm_zapper_tolerance",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_zapper_trigger",
 		.blocked = true
 	},
 	{ NULL }

@@ -54,6 +54,7 @@ fbalpha2012_MAKEFILE = makefile.libretro
 
 fceumm_REPO = https://github.com/libretro/libretro-fceumm
 fceumm_MAKEFILE = Makefile.libretro
+# fceumm_REVISION = 154ee559c0d5c592d2f5fc06380b94b7516ab899 # known good revision
 
 fmsx_REPO = https://github.com/libretro/fmsx-libretro
 
