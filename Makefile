@@ -59,6 +59,7 @@ fceumm_MAKEFILE = Makefile.libretro
 fmsx_REPO = https://github.com/libretro/fmsx-libretro
 
 gambatte_REPO = https://github.com/libretro/gambatte-libretro
+# gambatte_REVISION = 9574b6ef5961dcadc3fb5601779b673147515073 # known good revision
 
 snes9x_REPO = https://github.com/libretro/snes9x
 
