@@ -75,6 +75,7 @@ picodrive_MAKEFILE = Makefile.libretro
 
 pokemini_REPO = https://github.com/libretro/PokeMini
 pokemini_MAKEFILE = Makefile.libretro
+pokemini_REVISION = 684e7ea0950f4df48cd1fbf1160e6af3c262c9f0
 
 quicknes_REPO = https://github.com/libretro/QuickNES_Core
 
