@@ -183,7 +183,7 @@ $(1)_libretro.so: $(1)
 	cp $$($1_BUILD_PATH)/$(if $($(1)_CORE),$($(1)_CORE),$(1)_libretro.so) output/$(1)_libretro.so
 
 clean-$(1):
-	test ! -d $(1) || cd $$($1_BUILD_PATH) && $$($1_MAKE) clean
+	test ! -d $(1) || (cd $$($1_BUILD_PATH) && $$($1_MAKE) clean)
 	rm -rf $(1)_libretro.so
 endef
 
