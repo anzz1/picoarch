@@ -23,9 +23,9 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lpng12 -lz -Wl,--gc-sections -flto
 
 PATCH = git apply
 
-# Unpolished or slow cores that build
-# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 
-CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast genesis-plus-gx nxengine mednafen_supafaust
+# Extra cores that build
+# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx
+CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
 CORES+= beetle-vb fake-08 $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
@@ -85,6 +85,7 @@ quicknes_REPO = https://github.com/libretro/QuickNES_Core
 
 smsplus-gx_MAKEFILE = Makefile.libretro
 smsplus-gx_CORE = smsplus_libretro.so
+# smsplus-gx_REVISION = 60af17ddb2231ba98f4ed1203e2a2f58d08ea088 # known good revision
 
 genesis-plus-gx_MAKEFILE = Makefile.libretro
 genesis-plus-gx_CORE = genesis_plus_gx_libretro.so
