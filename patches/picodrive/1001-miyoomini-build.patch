@@ -1,8 +1,33 @@
+diff --git a/Makefile b/Makefile
+index 6abb430..9c5bd1d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -430,13 +430,13 @@ endif
+ # on x86, this is reduced by ~300MB when debug info is off (but not on ARM)
+ # not using O3 and -fno-expensive-optimizations seems to also help, but you may
+ # want to remove this stuff for better performance if your compiler can handle it
+-ifeq "$(DEBUG)" "0"
+-ifeq (,$(findstring msvc,$(platform)))
+-cpu/fame/famec.o: CFLAGS += -g0 -O2 -fno-expensive-optimizations
+-else
+-cpu/fame/famec.o: CFLAGS += -Od
+-endif
+-endif
++# ifeq "$(DEBUG)" "0"
++# ifeq (,$(findstring msvc,$(platform)))
++# cpu/fame/famec.o: CFLAGS += -g0 -O2 -fno-expensive-optimizations
++# else
++# cpu/fame/famec.o: CFLAGS += -Od
++# endif
++# endif
+ 
+ pico/carthw_cfg.c: pico/carthw.cfg
+ 	tools/make_carthw_c $< $@
 diff --git a/Makefile.libretro b/Makefile.libretro
-index 103180e6d3df9270eab322c056ab897d3ea96acd..5b3f29e488d0195556a86e75aa65db6cf8954fdd 100644
+index d55a058..ac7ba1e 100644
 --- a/Makefile.libretro
 +++ b/Makefile.libretro
-@@ -522,6 +522,30 @@ else ifeq ($(platform), trimui)
+@@ -509,6 +509,63 @@ else ifeq ($(platform), trimui)
  		LDFLAGS += -s
  	endif
  
@@ -13,23 +38,73 @@ index 103180e6d3df9270eab322c056ab897d3ea96acd..5b3f29e488d0195556a86e75aa65db6c
 +	CXX = $(CROSS_COMPILE)g++
 +	AR = $(CROSS_COMPILE)ar
 +	SHARED := -shared -Wl,--no-undefined
-+	DONT_COMPILE_IN_ZLIB = 1
++	fpic := -fPIC
 +	CFLAGS += -Ofast \
 +	-fdata-sections -ffunction-sections -Wl,--gc-sections \
 +	-fno-stack-protector -fno-ident -fomit-frame-pointer \
-+	-falign-functions=1 -falign-jumps=1 -falign-loops=1 \
 +	-fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops \
-+	-fmerge-all-constants -fno-math-errno
-+	CFLAGS += -fPIC -flto
-+	CFLAGS += -fomit-frame-pointer -ffast-math -D__GCW0__
-+	CFLAGS += -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve
-+	LDFLAGS += -flto
++	-fmerge-all-constants -fno-math-errno -ffast-math -fno-common 
++	CFLAGS += -fPIC -flto -fipa-pta -fipa-ra -D__GCW0__ -DHAVE_NEON=1 -DHAVE_ARMV7=1 -DHAVE_ARMV6=1
++	CFLAGS += -DHAVE_ARMV5=1 -DHAVE_ARMv7=1 -DHAVE_ARMv6=1 -DHAVE_ARMv5=1 -DLOW_MEMORY=1 
++	CFLAGS += -D_USE_DRZ80 -DEMU_F68K -D_ASM_DRAW_C -D_ASM_MEMORY_C -D_ASM_YM2612_C -D_ASM_MISC_C
++	CFLAGS += -D_ASM_CD_MEMORY_C -D_ASM_32X_DRAW -D_ASM_32X_MEMORY_C -D_SVP_DRC -DDRC_SH2
++	CFLAGS += -marm -march=armv7ve+simd -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
++	LDFLAGS += -fPIC -flto -fipa-pta -fipa-ra -lz -Wl,--gc-sections
++	ARCH = ARM
++	PLATFORM_ZLIB = 0
 +	HAVE_NEON = 1
++	HAVE_ARMV7 = 1
++	HAVE_ARMV6 = 1
++	HAVE_ARMV5 = 1
++	HAVE_ARMv7 = 1
++	HAVE_ARMv6 = 1
++	HAVE_ARMv5 = 1
++	LOW_MEMORY = 1
 +	BUILTIN_GPU = neon
++	use_cyclone = 0
++	use_fame = 1
++	use_drz80 = 1
++	use_cz80 = 0
++	use_sh2drc = 1
++	use_svpdrc = 1
++	asm_memory = 1
++	asm_render = 1
++	asm_ym2612 = 1
++	asm_misc = 1
++	asm_cdmemory = 1
++	asm_mix = 1
++	asm_32xdraw = 1
++	asm_32xmemory = 1	
 +	ifeq (,$(DEBUG))
 +		LDFLAGS += -s
 +	endif
-+	
++	SRCS_COMMON += $(R)pico/draw_arm.S $(R)pico/draw2_arm.S
++	SRCS_COMMON += $(R)pico/memory_arm.S
++	SRCS_COMMON += $(R)pico/sound/ym2612_arm.S
++	SRCS_COMMON += $(R)pico/misc_arm.s
++	SRCS_COMMON += $(R)pico/cd/misc_arm.s
++	SRCS_COMMON += $(R)pico/cd/memory_arm.S
++	SRCS_COMMON += $(R)pico/32x/draw_arm.S
++	SRCS_COMMON += $(R)pico/32x/memory_arm.S
++	SRCS_COMMON += $(R)pico/sound/mix_arm.S
++
  # Windows MSVC 2017 all architectures
  else ifneq (,$(findstring windows_msvc2017,$(platform)))
  	NO_GCC := 1
+diff --git a/platform/common/common.mak b/platform/common/common.mak
+index 550de72..fd76013 100644
+--- a/platform/common/common.mak
++++ b/platform/common/common.mak
+@@ -125,9 +125,9 @@ endif
+ SRCS_COMMON += $(R)pico/sound/sound.c $(R)pico/sound/resampler.c
+ SRCS_COMMON += $(R)pico/sound/sn76496.c $(R)pico/sound/ym2612.c
+ SRCS_COMMON += $(R)pico/sound/emu2413/emu2413.c
+-ifneq "$(ARCH)$(asm_mix)" "arm1"
+-SRCS_COMMON += $(R)pico/sound/mix.c
+-endif
++# ifneq "$(ARCH)$(asm_mix)" "arm1"
++# SRCS_COMMON += $(R)pico/sound/mix.c
++# endif
+ 
+ # === CPU cores ===
+ # --- M68k ---

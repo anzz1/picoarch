@@ -14,10 +14,6 @@ static const struct core_override_option picodrive_core_option_overrides[] = {
 		.info = "Specify video rendering method. 'Good' and 'Fast' are incompatible with games that rely on mid-frame palette/sprite updates.",
 	},
 	{
-		.key = "picodrive_sound_rate",
-		.desc = "Sample Rate",
-	},
-	{
 		.key = "picodrive_smsfm",
 		.desc = "SMS FM Sound",
 	},
@@ -26,15 +22,18 @@ static const struct core_override_option picodrive_core_option_overrides[] = {
 		.desc = "FM DAC Noise",
 	},
 	{
-		.key = "picodrive_overscan",
-		.info = "Crop out the potentially random glitchy video output that would have been hidden by the TV bezel."
-	},
-	{
 		.key = "picodrive_audio_filter",
+		.desc = "Low-Pass Filter",
 		.info = "Enable a low pass audio filter to better simulate the characteristic sound of a Model 1 Genesis. Ignored for SMS and PICO.",
+		.options = {
+			{ "disabled", NULL },
+			{ "low-pass", "enabled" },
+			{ NULL, NULL },
+		}
 	},
 	{
 		.key = "picodrive_lowpass_range",
+		.desc = "Low-Pass Filter (%)",
 		.info = "Specify the cut-off frequency of the audio low pass filter. A higher value increases the perceived 'strength' of the filter.",
 	},
 	{
@@ -51,7 +50,38 @@ static const struct core_override_option picodrive_core_option_overrides[] = {
 		.info = "Removes the original sprite-per-scanline hardware limit. This reduces flickering but can cause visual glitches during special effects.",
 	},
 	{
+		.key = "picodrive_input1",
+		.desc = "Controller Type",
+		.default_value = "6 button pad",
+		.info = "Type of controller plugged into slot 1.",
+		.options = {
+			{ "3 button pad", "3 Button Pad" },
+			{ "6 button pad", "6 Button Pad" },
+			{ "team player", "" },
+			{ "4way play", "" },
+			{ "None", NULL },
+			{ NULL, NULL },
+		}
+	},
+	{
+		.key = "picodrive_input2",
+		.default_value = "None",
+		.blocked = true,
+	},
+	{
 		.key = "picodrive_aspect",
+		.blocked = true,
+	},
+	{
+		.key = "picodrive_drc",
+		.blocked = true,
+	},
+	{
+		.key = "picodrive_sound_rate",
+		.blocked = true,
+	},
+	{
+		.key = "picodrive_fm_filter",
 		.blocked = true,
 	},
 	{ NULL }
