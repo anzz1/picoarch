@@ -24,9 +24,9 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lpng12 -lz -Wl,--gc-sections -flto
 PATCH = git apply
 
 # Unpolished or slow cores that build
-# EXTRA_CORES += mame2003_plus
-CORES = gambatte gpsp fceumm snes9x2005_plus pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast genesis-plus-gx snes9x2005 nxengine mednafen_supafaust
-CORES+= beetle-vb fake-08
+# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 
+CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast genesis-plus-gx nxengine mednafen_supafaust
+CORES+= beetle-vb fake-08 $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
 
@@ -37,6 +37,7 @@ fake-08_CORE = fake08_libretro_miyoomini.so
 nxengine_REPO = https://github.com/libretro/nxengine-libretro
 
 mednafen_supafaust_REPO = https://github.com/libretro/supafaust
+# mednafen_supafaust_REVISION = 75c658cce454e58ae04ea252f53a31c60d61548e # known good revision
 
 snes9x2005_plus_REPO = https://github.com/libretro/snes9x2005
 snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
