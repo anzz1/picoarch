@@ -14,6 +14,7 @@
 #include "overrides/pcsx_rearmed.h"
 #include "overrides/picodrive.h"
 #include "overrides/pokemini.h"
+#include "overrides/prboom.h"
 #include "overrides/quicknes.h"
 #include "overrides/smsplus.h"
 #include "overrides/snes9x2002.h"
@@ -37,6 +38,7 @@ static const struct core_override overrides[] = {
 	pcsx_rearmed_overrides,
 	picodrive_overrides,
 	pokemini_overrides,
+	prboom_overrides,
 	quicknes_overrides,
 	smsplus_overrides,
 	snes9x2002_overrides,

@@ -1,0 +1,564 @@
+diff --git a/libretro/libretro.c b/libretro/libretro.c
+--- a/libretro/libretro.c
++++ b/libretro/libretro.c
+@@ -73,7 +73,7 @@ static char **cheats_pending_list = NULL;
+ //forward decls
+ bool D_DoomMainSetup(void);
+ void D_DoomLoop(void);
+-void M_QuitDOOM(int choice);
++// void M_QuitDOOM(int choice);
+ void D_DoomDeinit(void);
+ void I_SetRes(void);
+ void I_UpdateSound(void);
+@@ -106,6 +106,8 @@ dbool   find_recursive_on;
+ // Default deadzone: 15%
+ static int analog_deadzone = (int)(0.15f * ANALOG_RANGE);
+ 
++static dbool toggle_run = false;
++
+ #define RETROPAD_CLASSIC RETRO_DEVICE_JOYPAD
+ #define RETROPAD_MODERN  RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 2)
+ 
+@@ -129,9 +131,9 @@ static gamepad_layout_t gp_classic = { // Based on PS1 Doom Port!
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,     "D-Pad Up" },
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,   "D-Pad Down" },
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "D-Pad Right" },
+-		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Strafe" },
+-		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Use" },
+-		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Fire" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Fire" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Use" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Strafe" },
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y,      "Run" },
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L,      "Strafe Left" },
+ 		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R,      "Strafe Right" },
+@@ -144,22 +146,22 @@ static gamepad_layout_t gp_classic = { // Based on PS1 Doom Port!
+ 		{ 0 },
+ 	},
+ 	{	// gamekey,             menukey
+-		{ &key_strafe,          &key_menu_backspace }, // RETRO_DEVICE_ID_JOYPAD_B
+-		{ &key_speed,           &key_menu_backspace }, // RETRO DEVICE_ID_JOYPAD_Y
+-		{ &key_map,             &key_menu_backspace }, // RETRO_DEVICE_ID_JOYPAD_SELECT
+-		{ &key_menu_escape,     &key_menu_escape },    // RETRO_DEVICE_ID_JOYPAD_START
+-		{ &key_up,              &key_menu_up },        // RETRO_DEVICE_ID_JOYPAD_UP
+-		{ &key_down,            &key_menu_down },      // RETRO_DEVICE_ID_JOYPAD_DOWN
+-		{ &key_left,            &key_menu_left },      // RETRO_DEVICE_ID_JOYPAD_LEFT
+-		{ &key_right,           &key_menu_right },     // RETRO_DEVICE_ID_JOYPAD_RIGHT
+-		{ &key_use,             &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_A
+-		{ &key_fire,            &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_X
+-		{ &key_strafeleft,      &key_menu_left },      // RETRO_DEVICE_ID_JOYPAD_L1
+-		{ &key_straferight,     &key_menu_right },     // RETRO_DEVICE_ID_JOYPAD_R1
+-		{ &key_weaponcycledown, &key_menu_backspace }, // RETRO_DEVICE_ID_JOYPAD_L2
+-		{ &key_weaponcycleup,   &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_R2
+-		{ &key_autorun,         &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_L3
+-		{ &key_reverse,         &key_menu_backspace }, // RETRO_DEVICE_ID_JOYPAD_R3
++		{ &key_use,             &key_menu_backspace },  // RETRO_DEVICE_ID_JOYPAD_B
++		{ &key_speed,           &key_speed },           // RETRO DEVICE_ID_JOYPAD_Y
++		{ &key_map,             &key_menu_backspace },  // RETRO_DEVICE_ID_JOYPAD_SELECT
++		{ &key_menu_escape,     &key_menu_escape },     // RETRO_DEVICE_ID_JOYPAD_START
++		{ &key_up,              &key_menu_up },         // RETRO_DEVICE_ID_JOYPAD_UP
++		{ &key_down,            &key_menu_down },       // RETRO_DEVICE_ID_JOYPAD_DOWN
++		{ &key_left,            &key_menu_left },       // RETRO_DEVICE_ID_JOYPAD_LEFT
++		{ &key_right,           &key_menu_right },      // RETRO_DEVICE_ID_JOYPAD_RIGHT
++		{ &key_fire,            &key_menu_enter },      // RETRO_DEVICE_ID_JOYPAD_A
++		{ &key_strafe,          &key_strafe },          // RETRO_DEVICE_ID_JOYPAD_X
++		{ &key_strafeleft,      &key_strafeleft },      // RETRO_DEVICE_ID_JOYPAD_L1
++		{ &key_straferight,     &key_straferight },     // RETRO_DEVICE_ID_JOYPAD_R1
++		{ &key_weaponcycledown, &key_weaponcycledown }, // RETRO_DEVICE_ID_JOYPAD_L2
++		{ &key_weaponcycleup,   &key_weaponcycleup },   // RETRO_DEVICE_ID_JOYPAD_R2
++		{ &key_autorun,         &key_autorun },         // RETRO_DEVICE_ID_JOYPAD_L3
++		{ &key_reverse,         &key_reverse },         // RETRO_DEVICE_ID_JOYPAD_R3
+ 	},
+ 	16,
+ };
+@@ -600,6 +602,16 @@ static void update_variables(bool startup)
+       Z_SetPurgeLimit(purge_limit);
+    }
+ #endif
++
++   var.key = "prboom-toggle_run";
++   var.value = NULL;
++   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
++   {
++      if (!strcmp(var.value, "toggle"))
++         toggle_run = true;
++      else
++         toggle_run = false;
++   }
+ }
+ 
+ void I_SafeExit(int rc);
+@@ -908,8 +920,8 @@ extern menu_t EpiDef;
+ extern menu_t LoadDef;
+ extern menu_t SaveDef;
+ extern menu_t OptionsDef;
+-extern menu_t MouseDef;
+-extern menu_t KeybndDef;
++// extern menu_t MouseDef;
++// extern menu_t KeybndDef;
+ extern menu_t WeaponDef;
+ extern menu_t StatusHUDDef;
+ extern menu_t AutoMapDef;
+@@ -917,7 +929,7 @@ extern menu_t EnemyDef;
+ extern menu_t GeneralDef;
+ extern menu_t CompatDef;
+ extern menu_t MessageDef;
+-extern menu_t ChatStrDef;
++// extern menu_t ChatStrDef;
+ extern menu_t SetupDef;
+ 
+ static menu_t *menus[] = {
+@@ -932,8 +944,8 @@ static menu_t *menus[] = {
+ 		   &LoadDef,
+ 		   &SaveDef,
+ 		   &OptionsDef,
+-		   &MouseDef,
+-		   &KeybndDef,
++		   // &MouseDef,
++		   // &KeybndDef,
+ 		   &WeaponDef,
+ 		   &StatusHUDDef,
+ 		   &AutoMapDef,
+@@ -941,7 +953,7 @@ static menu_t *menus[] = {
+ 		   &GeneralDef,
+ 		   &CompatDef,
+ 		   &MessageDef,
+-		   &ChatStrDef,
++		   // &ChatStrDef,
+ 		   &SetupDef
+ };
+ 
+@@ -1288,13 +1300,13 @@ static void process_gamepad_buttons(int16_t ret, unsigned num_buttons, action_lu
+       if(new_input[i] && !old_input[i])
+       {
+          event.type = ev_keydown;
+-         event.data1 = *((menuactive)? action_lut[i].menukey : action_lut[i].gamekey);
++         event.data1 = *((toggle_run && i == 1) ? (&key_autorun) : (menuactive ? action_lut[i].menukey : action_lut[i].gamekey));
+       }
+ 
+       if(!new_input[i] && old_input[i])
+       {
+          event.type = ev_keyup;
+-         event.data1 = *((menuactive)? action_lut[i].menukey : action_lut[i].gamekey);
++         event.data1 = *((toggle_run && i == 1) ? (&key_autorun) : (menuactive ? action_lut[i].menukey : action_lut[i].gamekey));
+       }
+ 
+       if(event.type == ev_keydown || event.type == ev_keyup)
+diff --git a/libretro/libretro_core_options.h b/libretro/libretro_core_options.h
+index 60c27f7..16d52e2 100644
+--- a/libretro/libretro_core_options.h
++++ b/libretro/libretro_core_options.h
+@@ -140,6 +140,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       "16"
+    },
+ #endif
++   {
++      "prboom-toggle_run",
++      "Run Mode",
++      NULL,
++      "Set the action mode for the 'RUN' button.",
++      NULL,
++      NULL,
++      {
++         { "hold", NULL },
++         { "toggle", NULL },
++         { NULL, NULL },
++      },
++      "disabled"
++   },
+    { NULL, NULL, NULL, NULL, NULL, NULL, {{0}}, NULL },
+ };
+ 
+diff --git a/src/d_main.c b/src/d_main.c
+index 2fd7817..04b2379 100644
+--- a/src/d_main.c
++++ b/src/d_main.c
+@@ -1477,13 +1477,13 @@ void D_DoomLoop(void)
+ }
+ 
+ //foward decl
+-void M_QuitDOOM(int choice);
++// void M_QuitDOOM(int choice);
+ 
+ void D_DoomDeinit(void)
+ {
+   lprintf(LO_INFO,"D_DoomDeinit:\n");
+   //Deinit
+-  M_QuitDOOM(0);
++  // M_QuitDOOM(0);
+ #ifdef HAVE_NET
+   D_QuitNetGame();
+   I_ShutdownNetwork();
+diff --git a/src/m_menu.c b/src/m_menu.c
+index aaa0188..8e778ed 100644
+--- a/src/m_menu.c
++++ b/src/m_menu.c
+@@ -226,10 +226,10 @@ void M_Options(int choice);
+ void M_EndGame(int choice);
+ void M_ReadThis(int choice);
+ void M_ReadThis2(int choice);
+-void M_QuitDOOM(int choice);
++// void M_QuitDOOM(int choice);
+ 
+ void M_ChangeMessages(int choice);
+-void M_ChangeSensitivity(int choice);
++// void M_ChangeSensitivity(int choice);
+ void M_SfxVol(int choice);
+ void M_MusicVol(int choice);
+ /* void M_ChangeDetail(int choice);  unused -- killough */
+@@ -237,10 +237,10 @@ void M_SizeDisplay(int choice);
+ void M_StartGame(int choice);
+ void M_Sound(int choice);
+ 
+-void M_Mouse(int choice, int *sens);      /* killough */
+-void M_MouseVert(int choice);
+-void M_MouseHoriz(int choice);
+-void M_DrawMouse(void);
++// void M_Mouse(int choice, int *sens);      /* killough */
++// void M_MouseVert(int choice);
++// void M_MouseHoriz(int choice);
++// void M_DrawMouse(void);
+ 
+ void M_FinishReadThis(int choice);
+ void M_FinishHelp(int choice);            // killough 10/98
+@@ -281,18 +281,18 @@ void M_ClearMenus (void);
+ 
+ int  M_GetKeyString(int,int);
+ void M_Setup(int choice);
+-void M_KeyBindings(int choice);
++// void M_KeyBindings(int choice);
+ void M_Weapons(int);
+ void M_StatusBar(int);
+ void M_Automap(int);
+ void M_Enemy(int);
+ void M_Messages(int);
+-void M_ChatStrings(int);
++// void M_ChatStrings(int);
+ void M_InitExtendedHelp(void);
+ void M_ExtHelpNextScreen(int);
+ void M_ExtHelp(int);
+ static int M_GetPixelWidth(const char*);
+-void M_DrawKeybnd(void);
++// void M_DrawKeybnd(void);
+ void M_DrawWeapons(void);
+ static void M_DrawMenuString(int,int,int);
+ static void M_DrawStringCentered(int,int,int,const char*);
+@@ -301,7 +301,7 @@ void M_DrawExtHelp(void);
+ void M_DrawAutoMap(void);
+ void M_DrawEnemy(void);
+ void M_DrawMessages(void);
+-void M_DrawChatStrings(void);
++// void M_DrawChatStrings(void);
+ void M_Compat(int);       // killough 10/98
+ void M_ChangeDemoSmoothTurns(void);
+ void M_ChangeFramerate(void);
+@@ -334,7 +334,7 @@ enum
+   savegame,
+   options,
+   readthis,
+-  quitdoom,
++//  quitdoom,
+   main_end
+ } main_e;
+ 
+@@ -354,7 +354,7 @@ menuitem_t MainMenu[]=
+   {1,"M_SAVEG", M_SaveGame,'s', "Save Game"},
+   // Another hickup with Special edition.
+   {1,"M_RDTHIS",M_ReadThis,'r', "Read This!"},
+-  {1,"M_QUITG", M_QuitDOOM,'q', "Quit Game"}
++//  {1,"M_QUITG", M_QuitDOOM,'q', "Quit Game"}
+ };
+ 
+ menu_t MainDef =
+@@ -979,7 +979,7 @@ enum
+   messages,
+   /*    detail, obsolete -- killough */
+   scrnsize,
+-  mousesens,
++//  mousesens,
+   /* option_empty2, submenu now -- killough */
+   soundvol,
+   opt_end
+@@ -995,7 +995,7 @@ menuitem_t OptionsMenu[]=
+   {1,"M_ENDGAM", M_EndGame,'e',  "END GAME"},
+   {1,"M_MESSG",  M_ChangeMessages,'m', "MESSAGES"},
+   {2,"M_SCRNSZ", M_SizeDisplay,'s', "SCREEN SIZE"},
+-  {1,"M_MSENS",  M_ChangeSensitivity,'m', "MOUSE SENSITIVITY"},
++//  {1,"M_MSENS",  M_ChangeSensitivity,'m', "MOUSE SENSITIVITY"},
+   {1,"M_SVOL",   M_Sound,'s', "SOUND VOLUME"},
+ };
+ 
+@@ -1038,6 +1038,7 @@ void M_Options(int choice)
+ //
+ // M_QuitDOOM
+ //
++#if 0
+ int quitsounds[8] =
+ {
+   sfx_pldeth,
+@@ -1061,9 +1062,11 @@ int quitsounds2[8] =
+   sfx_bspact,
+   sfx_sgtatk
+ };
++#endif
+ 
+ dbool quit_pressed = false;
+ 
++#if 0
+ static void M_QuitResponse(int ch)
+ {
+   if (ch != 'y')
+@@ -1101,6 +1104,7 @@ void M_QuitDOOM(int choice)
+   has_exited = 0;
+   M_QuitResponse('y');
+ }
++#endif
+ 
+ /////////////////////////////
+ //
+@@ -1200,6 +1204,7 @@ void M_MusicVol(int choice)
+ // numerical values for the Mouse Sensitivity menu items
+ // The 'empty' slots are where the sliding scales appear.
+ 
++#if 0
+ enum
+ {
+   mouse_horiz,
+@@ -1294,6 +1299,7 @@ void M_Mouse(int choice, int *sens)
+       break;
+     }
+ }
++#endif
+ 
+ /////////////////////////////
+ //
+@@ -1492,13 +1498,13 @@ static char menu_buffer[64];
+ enum
+ {
+   set_compat,
+-  set_key_bindings,
++//  set_key_bindings,
+   set_weapons,
+   set_statbar,
+   set_automap,
+   set_enemy,
+   set_messages,
+-  set_chatstrings,
++//  set_chatstrings,
+   set_setup_end
+ } setup_e;
+ 
+@@ -1515,13 +1521,13 @@ int setup_screen; // the current setup screen. takes values from setup_e
+ menuitem_t SetupMenu[]=
+ {
+   {1,"M_COMPAT",M_Compat,     'p', "DOOM COMPATIBILITY"},
+-  {1,"M_KEYBND",M_KeyBindings,'k', "KEY BINDINGS"},
++//  {1,"M_KEYBND",M_KeyBindings,'k', "KEY BINDINGS"},
+   {1,"M_WEAP"  ,M_Weapons,    'w', "WEAPONS"},
+   {1,"M_STAT"  ,M_StatusBar,  's', "STATUS BAR / HUD"},
+   {1,"M_AUTO"  ,M_Automap,    'a', "AUTOMAP"},
+   {1,"M_ENEM"  ,M_Enemy,      'e', "ENEMIES"},
+   {1,"M_MESS"  ,M_Messages,   'm', "MESSAGES"},
+-  {1,"M_CHAT"  ,M_ChatStrings,'c', "CHAT STRINGS"},
++//  {1,"M_CHAT"  ,M_ChatStrings,'c', "CHAT STRINGS"},
+ };
+ 
+ /////////////////////////////
+@@ -1577,6 +1583,7 @@ menu_t  SetupDef =
+ // follow the format of the 'Big Font' menu structures. See the comments
+ // for SetupDef (above) to help understand what each of these says.
+ 
++#if 0
+ menu_t KeybndDef =
+ {
+   generic_setup_end,
+@@ -1586,6 +1593,7 @@ menu_t KeybndDef =
+   34,5,      // skull drawn here
+   0
+ };
++#endif
+ 
+ menu_t WeaponDef =
+ {
+@@ -1637,6 +1645,7 @@ menu_t MessageDef =                                         // phares 4/08/98
+   0
+ };
+ 
++#if 0
+ menu_t ChatStrDef =                                         // phares 4/10/98
+ {
+   generic_setup_end,
+@@ -1646,6 +1655,7 @@ menu_t ChatStrDef =                                         // phares 4/10/98
+   34,5,      // skull drawn here
+   0
+ };
++#endif
+ 
+ menu_t GeneralDef =                                           // killough 10/98
+ {
+@@ -2066,25 +2076,25 @@ static void M_DrawInstructions(void)
+         break;
+ 
+     case S_YESNO:
+-      M_DrawStringCentered(160, 20, CR_SELECT, "Press ENTER key to toggle");
++      M_DrawStringCentered(160, 20, CR_SELECT, "Press A to toggle");
+       break;
+     case S_WEAP:
+       M_DrawStringCentered(160, 20, CR_SELECT, "Enter weapon number");
+       break;
+     case S_NUM:
+-      M_DrawStringCentered(160, 20, CR_SELECT, "Enter value. Press ENTER when finished.");
++      M_DrawStringCentered(160, 20, CR_SELECT, "Enter value. Press A when finished.");
+       break;
+     case S_COLOR:
+-      M_DrawStringCentered(160, 20, CR_SELECT, "Select color and press enter");
++      M_DrawStringCentered(160, 20, CR_SELECT, "Select color and press A");
+       break;
+     case S_CRITEM:
+       M_DrawStringCentered(160, 20, CR_SELECT, "Enter value");
+       break;
+     case S_CHAT:
+-      M_DrawStringCentered(160, 20, CR_SELECT, "Type/edit chat string and Press ENTER");
++      M_DrawStringCentered(160, 20, CR_SELECT, "Type/edit chat string and Press A");
+       break;
+     case S_FILE:
+-      M_DrawStringCentered(160, 20, CR_SELECT, "Type/edit filename and Press ENTER");
++      M_DrawStringCentered(160, 20, CR_SELECT, "Type/edit filename and Press A");
+       break;
+     case S_CHOICE:
+       M_DrawStringCentered(160, 20, CR_SELECT, "Press left or right to choose");
+@@ -2094,9 +2104,9 @@ static void M_DrawInstructions(void)
+     }
+   } else {
+     if (flags & S_RESET)
+-      M_DrawStringCentered(160, 20, CR_HILITE, "Press ENTER key to reset to defaults");
++      M_DrawStringCentered(160, 20, CR_HILITE, "Press A to reset to defaults");
+     else
+-      M_DrawStringCentered(160, 20, CR_HILITE, "Press Enter to Change");
++      M_DrawStringCentered(160, 20, CR_HILITE, "Press A to Change");
+   }
+ }
+ 
+@@ -2239,7 +2249,7 @@ setup_menu_t keys_settings2[] =  // Key Binding screen strings
+   SETUP_MENU_KEY("QUICKSAVE"  ,m_scrn,KB_X,KB_Y+15*8,&key_quicksave,0),
+   SETUP_MENU_KEY("QUICKLOAD"  ,m_scrn,KB_X,KB_Y+16*8,&key_quickload,0),
+   SETUP_MENU_KEY("END GAME"   ,m_scrn,KB_X,KB_Y+17*8,&key_endgame,0),
+-  SETUP_MENU_KEY("QUIT"       ,m_scrn,KB_X,KB_Y+18*8,&key_quit,0),
++//  SETUP_MENU_KEY("QUIT"       ,m_scrn,KB_X,KB_Y+18*8,&key_quit,0),
+ 
+   SETUP_MENU_PREV(keys_settings1,KB_PREV,KB_Y+20*8),
+   SETUP_MENU_NEXT(keys_settings3,KB_NEXT,KB_Y+20*8),
+@@ -2306,6 +2316,7 @@ setup_menu_t keys_settings4[] =  // Key Binding screen strings
+ // locate the first item on the screen where the cursor is allowed to
+ // land.
+ 
++#if 0
+ void M_KeyBindings(int choice)
+ {
+   M_SetupNextMenu(&KeybndDef);
+@@ -2345,6 +2356,7 @@ void M_DrawKeybnd(void)
+   if (default_verify)
+     M_DrawDefVerify();
+ }
++#endif
+ 
+ /////////////////////////////
+ //
+@@ -3440,6 +3452,7 @@ setup_menu_t chat_settings1[] =  // Chat Strings screen
+ // locate the first item on the screen where the cursor is allowed to
+ // land.
+ 
++#if 0
+ void M_ChatStrings(int choice)
+ {
+   M_SetupNextMenu(&ChatStrDef);
+@@ -3476,6 +3489,7 @@ void M_DrawChatStrings(void)
+   if (default_verify)
+     M_DrawDefVerify();
+ }
++#endif
+ 
+ /////////////////////////////
+ //
+@@ -3888,7 +3902,7 @@ setup_menu_t helpstrings[] =  // HELP screen strings
+   SETUP_MENU_KEY("QUICKSAVE"   ,m_null,KT_X2,KT_Y1+ 3*8,&key_quicksave,0),
+   SETUP_MENU_KEY("END GAME"    ,m_null,KT_X2,KT_Y1+ 4*8,&key_endgame,0),
+   SETUP_MENU_KEY("QUICKLOAD"   ,m_null,KT_X2,KT_Y1+ 5*8,&key_quickload,0),
+-  SETUP_MENU_KEY("QUIT"        ,m_null,KT_X2,KT_Y1+ 6*8,&key_quit,0),
++  // SETUP_MENU_KEY("QUIT"        ,m_null,KT_X2,KT_Y1+ 6*8,&key_quit,0),
+ 
+   // Final entry
+ 
+@@ -4206,12 +4220,14 @@ dbool M_Responder (event_t* ev) {
+       return TRUE;
+       }
+ 
++#if 0
+     if (ch == key_quit)       // Quit DOOM
+       {
+       S_StartSound(NULL,sfx_swtchn);
+       has_exited = TRUE;
+       return TRUE;
+       }
++#endif
+ 
+     if (ch == key_gamma)       // gamma toggle
+       {
+@@ -5415,7 +5431,7 @@ void M_Init(void)
+       // This is used because DOOM 2 had only one HELP
+       //  page. I use CREDIT as second page now, but
+       //  kept this hack for educational purposes.
+-      MainMenu[readthis] = MainMenu[quitdoom];
++      // MainMenu[readthis] = MainMenu[quitdoom];
+       MainDef.numitems--;
+       MainDef.y += 8;
+       NewDef.prevMenu = &MainDef;
+diff --git a/src/m_misc.c b/src/m_misc.c
+index c35afb1..c309cb5 100644
+--- a/src/m_misc.c
++++ b/src/m_misc.c
+@@ -198,7 +198,7 @@ default_t defaults[] =
+    def_int,ss_none, NULL, NULL}, // 1=take special steps ensuring demo sync, 2=only during recordings
+   {"level_precache",{(int*)&precache, NULL},{0, NULL},0,1,
+    def_bool,ss_none, NULL, NULL}, // precache level data?
+-  {"demo_smoothturns", {&demo_smoothturns, NULL},  {0, NULL},0,1,
++  {"demo_smoothturns", {&demo_smoothturns, NULL},  {1, NULL},0,1,
+    def_bool,ss_gen, NULL, NULL},
+   {"demo_smoothturnsfactor", {&demo_smoothturnsfactor, NULL},  {6, NULL},1,SMOOTH_PLAYING_MAXFACTOR,
+    def_int,ss_gen, NULL, NULL},
+@@ -289,8 +289,8 @@ default_t defaults[] =
+   {"pitched_sounds",{&pitched_sounds, NULL},{0, NULL},0,1, // killough 2/21/98
+    def_bool,ss_gen, NULL, NULL}, // enables variable pitch in sound effects (from id's original code)
+   {"samplerate",{&snd_samplerate, NULL},{11025, NULL},11025,48000, def_int,ss_none, NULL, NULL},
+-  {"sfx_volume",{&snd_SfxVolume, NULL},{8, NULL},0,15, def_int,ss_none, NULL, NULL},
+-  {"music_volume",{&snd_MusicVolume, NULL},{8, NULL},0,15, def_int,ss_none, NULL, NULL},
++  {"sfx_volume",{&snd_SfxVolume, NULL},{15, NULL},0,15, def_int,ss_none, NULL, NULL},
++  {"music_volume",{&snd_MusicVolume, NULL},{15, NULL},0,15, def_int,ss_none, NULL, NULL},
+   {"mus_pause_opt",{&mus_pause_opt, NULL},{2, NULL},0,2, // CPhipps - music pausing
+    def_int, ss_none, NULL, NULL}, // 0 = kill music when paused, 1 = pause music, 2 = let music continue
+   {"mus_load_external", {&mus_load_external, NULL},  {2, NULL},0,2,
+@@ -301,9 +301,9 @@ default_t defaults[] =
+   {"Video settings",{NULL, NULL},{0, NULL},UL,UL,def_none,ss_none, NULL, NULL},
+   {"screenblocks",{&screenblocks, NULL},{0, NULL},0,1,  // used to be int 3-11 (now just boolean)
+    def_int,ss_none, NULL, NULL},
+-  {"usegamma",{&usegamma, NULL},{0, NULL},0,4, //jff 3/6/98 fix erroneous upper limit in range
++  {"usegamma",{&usegamma, NULL},{2, NULL},0,4, //jff 3/6/98 fix erroneous upper limit in range
+    def_int,ss_gen, NULL, NULL}, // gamma correction level // killough 1/18/98
+-  {"uncapped_framerate", {&movement_smooth, NULL},  {3, NULL},0,16,
++  {"uncapped_framerate", {&movement_smooth, NULL},  {3, NULL},0,4,
+    def_int,ss_gen, NULL, NULL},
+   {"filter_wall",{(int*)&drawvars.filterwall, NULL},{RDRAW_FILTER_POINT, NULL},
+    RDRAW_FILTER_POINT, RDRAW_FILTER_ROUNDED, def_int,ss_gen, NULL, NULL},
+diff --git a/src/z_zone.c b/src/z_zone.c
+index bf9ec1a..26dc0be 100644
+--- a/src/z_zone.c
++++ b/src/z_zone.c
+@@ -117,7 +117,7 @@ void Z_Close(void)
+     * close content if we free memory
+     * here while running on Windows... */
+ #if !defined(_WIN32)
+-   Z_FreeTags(PU_FREE, PU_MAX);
++   // Z_FreeTags(PU_FREE, PU_MAX);
+ #endif
+    memory_size = 0;
+    free_memory = 0;

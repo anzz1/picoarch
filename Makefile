@@ -26,7 +26,7 @@ PATCH = git apply
 # Extra cores that build
 # EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
-CORES+= beetle-vb fake-08 $(EXTRA_CORES)
+CORES+= beetle-vb fake-08 prboom $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
 
@@ -80,6 +80,10 @@ picodrive_MAKEFILE = Makefile.libretro
 pokemini_REPO = https://github.com/libretro/PokeMini
 pokemini_MAKEFILE = Makefile.libretro
 pokemini_REVISION = 684e7ea0950f4df48cd1fbf1160e6af3c262c9f0
+
+prboom_REPO = https://github.com/libretro/libretro-prboom
+# use known good revision
+prboom_REVISION = 47a95e921e9f1e5928730b7369d14129769fa475
 
 quicknes_REPO = https://github.com/libretro/QuickNES_Core
 
@@ -195,9 +199,12 @@ $(foreach core,$(CORES),$(eval $(call CORE_template,$(core))))
 
 cores: $(SOFILES)
 
-clean: # clean-libpicofe
-	cd source && rm -f *.o
+clean-picoarch:
+	rm -f $(OBJS)
 	cd output && rm -f $(BIN) $(SOFILES)
+
+clean: clean-libpicofe clean-picoarch
+	rm -f $(SOFILES)
 
 clean-all: $(foreach core,$(CORES),clean-$(core)) clean
 

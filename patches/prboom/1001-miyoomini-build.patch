@@ -1,0 +1,49 @@
+diff --git a/Makefile b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -93,11 +93,11 @@ ifeq ($(OSX_LT_MAVERICKS),YES)
+    fpic += -mmacosx-version-min=10.1
+ endif
+ 
+-   ifeq ($(CROSS_COMPILE),1)
+-	TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+-	CFLAGS   += $(TARGET_RULE)
+-	LDFLAGS  += $(TARGET_RULE)
+-   endif
++#   ifeq ($(CROSS_COMPILE),1)
++#	TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
++#	CFLAGS   += $(TARGET_RULE)
++#	LDFLAGS  += $(TARGET_RULE)
++#   endif
+ 
+ # iOS
+ else ifneq (,$(findstring ios,$(platform)))
+@@ -197,6 +197,28 @@ else ifeq ($(platform), classic_armv8_a35)
+ 	LDFLAGS += -marm -mcpu=cortex-a35 -mfpu=neon-fp-armv8 -mfloat-abi=hard -Ofast -flto -fuse-linker-plugin
+ #######################################
+ 
++# MIYOO MINI
++else ifeq ($(platform), miyoomini)
++	TARGET := $(TARGET_NAME)_libretro.so
++	CC = $(CROSS_COMPILE)gcc
++	CXX = $(CROSS_COMPILE)g++
++	AR = $(CROSS_COMPILE)ar
++	fpic := -fPIC
++	SHARED := -shared -Wl,--version-script=libretro/link.T -Wl,-no-undefined
++	CFLAGS += -Ofast \
++	-flto=4 -fwhole-program -fuse-linker-plugin \
++	-fdata-sections -ffunction-sections -Wl,--gc-sections \
++	-fno-stack-protector -fno-ident -fomit-frame-pointer \
++	-falign-functions=1 -falign-jumps=1 -falign-loops=1 \
++	-fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops \
++	-fmerge-all-constants -fno-math-errno -ffast-math -Wl,--gc-sections \
++	-marm -march=armv7ve+simd -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
++	CXXFLAGS += $(CFLAGS)
++	LDFLAGS += -flto=4 -fuse-linker-plugin -s
++	HAVE_NEON = 1
++	HAVE_LOW_MEMORY = 1
++	ARCH = arm
++
+ else ifeq ($(platform), qnx)
+ 	EXT    ?= so
+    TARGET := $(TARGET_NAME)_libretro_qnx.$(EXT)
