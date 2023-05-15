@@ -26,7 +26,7 @@ PATCH = git apply
 # Extra cores that build
 # EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
-CORES+= beetle-vb fake-08 prboom $(EXTRA_CORES)
+CORES+= beetle-vb fake-08 prboom beetle-ngp beetle-supergrafx $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
 
@@ -47,6 +47,14 @@ beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
 
 beetle-vb_REPO = https://github.com/libretro/beetle-vb-libretro
 beetle-vb_CORE = mednafen_vb_libretro.so
+
+beetle-ngp_REPO = https://github.com/libretro/beetle-ngp-libretro
+beetle-ngp_CORE = mednafen_ngp_libretro.so
+# beetle-ngp_REVISION = 65460e3a9ad529f6901caf669abbda11f437ab55 # known good revision
+
+beetle-supergrafx_REPO = https://github.com/libretro/beetle-supergrafx-libretro
+beetle-supergrafx_CORE = mednafen_supergrafx_libretro.so
+# beetle-supergrafx_REVISION = b73fa3556343ab410f253fac822ec8d7d6e42fc9 # known good revision
 
 bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
 

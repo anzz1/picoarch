@@ -1,5 +1,7 @@
 #include "overrides.h"
+#include "overrides/beetle-ngp.h"
 #include "overrides/beetle-pce-fast.h"
+#include "overrides/beetle-supergrafx.h"
 #include "overrides/bluemsx.h"
 #include "overrides/fake-08.h"
 #include "overrides/fceumm.h"
@@ -23,7 +25,9 @@
 #include "util.h"
 
 static const struct core_override overrides[] = {
+	beetle_ngp_overrides,
 	beetle_pce_fast_overrides,
+	beetle_supergrafx_overrides,
 	bluemsx_overrides,
 	fake_08_overrides,
 	fceumm_overrides,
