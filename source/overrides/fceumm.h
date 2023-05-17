@@ -75,6 +75,10 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.desc = "Famiclone Audio",
 	},
 	{
+		.key = "fceumm_sndvolume",
+		.default_value = "10",
+	},
+	{
 		.key = "fceumm_aspect",
 		.default_value = "Pixel",
 		.blocked = true
