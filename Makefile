@@ -209,7 +209,7 @@ cores: $(SOFILES)
 
 clean-picoarch:
 	rm -f $(OBJS)
-	cd output && rm -f $(BIN) $(SOFILES)
+	test ! -d output || (cd output && rm -f $(BIN) $(SOFILES))
 
 clean: clean-libpicofe clean-picoarch
 	rm -f $(SOFILES)
