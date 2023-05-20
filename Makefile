@@ -33,6 +33,8 @@ CORES+= beetle-vb fake-08 prboom beetle-ngp beetle-supergrafx $(EXTRA_CORES)
 fake-08_REPO = https://github.com/jtothebell/fake-08
 fake-08_BUILD_PATH = cores/fake-08/platform/libretro
 fake-08_CORE = fake08_libretro_miyoomini.so
+# the next commit breaks savestates
+fake-08_REVISION = 6279216964e351409201e987653e3d708fd4ad78
 
 nxengine_REPO = https://github.com/libretro/nxengine-libretro
 
