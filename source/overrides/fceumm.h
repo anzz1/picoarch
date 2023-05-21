@@ -2,27 +2,31 @@
 
 static const struct core_override_option fceumm_core_option_overrides[] = {
 	{
+		.key = "fceumm_overclocking",
+		.info = "Overclocking can reduce slowdowns in some games. Postrender is compatible with most games, while Vblank is better for others like Contra Force.",
+	},
+	{
 		.key = "fceumm_ramstate",
 		.desc = "RAM Fill (Restart)",
 	},
 	{
 		.key = "fceumm_overscan_h_left",
-		.desc = "Crop Left Overscan",
+		.desc = "Crop Left Pixels",
 		.default_value = "8",
 	},
 	{
 		.key = "fceumm_overscan_h_right",
-		.desc = "Crop Right Overscan",
+		.desc = "Crop Right Pixels",
 		.default_value = "8",
 	},
 	{
 		.key = "fceumm_overscan_v_top",
-		.desc = "Crop Top Overscan",
+		.desc = "Crop Top Pixels",
 		.default_value = "8",
 	},
 	{
 		.key = "fceumm_overscan_v_bottom",
-		.desc = "Crop Btm Overscan",
+		.desc = "Crop Bottom Pixels",
 		.default_value = "8",
 	},
 	{
@@ -63,20 +67,22 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.desc = "PCM Channel",
 	},
 	{
-		.key = "fceumm_show_adv_system_options",
-		.desc = "Show Sys Options",
-	},
-	{
-		.key = "fceumm_show_adv_sound_options",
-		.desc = "Show Snd Options",
-	},
-	{
 		.key = "fceumm_swapduty",
 		.desc = "Famiclone Audio",
 	},
 	{
 		.key = "fceumm_sndvolume",
 		.default_value = "10",
+	},
+	{
+		.key = "fceumm_show_adv_system_options",
+		.default_value = "enabled",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_show_adv_sound_options",
+		.default_value = "enabled",
+		.blocked = true
 	},
 	{
 		.key = "fceumm_aspect",
