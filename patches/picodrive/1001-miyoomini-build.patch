@@ -46,7 +46,7 @@ index d55a058..ac7ba1e 100644
 +	-fmerge-all-constants -fno-math-errno -ffast-math -fno-common 
 +	CFLAGS += -fPIC -flto -fipa-pta -fipa-ra -D__GCW0__ -DHAVE_NEON=1 -DHAVE_ARMV7=1 -DHAVE_ARMV6=1
 +	CFLAGS += -DHAVE_ARMV5=1 -DHAVE_ARMv7=1 -DHAVE_ARMv6=1 -DHAVE_ARMv5=1 -DLOW_MEMORY=1 
-+	CFLAGS += -D_USE_DRZ80 -DEMU_F68K -D_ASM_DRAW_C -D_ASM_MEMORY_C -D_ASM_YM2612_C -D_ASM_MISC_C
++	CFLAGS += -D_USE_DRZ80 -DEMU_C68K -D_ASM_DRAW_C -D_ASM_MEMORY_C -D_ASM_YM2612_C -D_ASM_MISC_C
 +	CFLAGS += -D_ASM_CD_MEMORY_C -D_ASM_32X_DRAW -D_ASM_32X_MEMORY_C -D_SVP_DRC -DDRC_SH2
 +	CFLAGS += -marm -march=armv7ve+simd -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
 +	LDFLAGS += -fPIC -flto -fipa-pta -fipa-ra -lz -Wl,--gc-sections
@@ -61,8 +61,8 @@ index d55a058..ac7ba1e 100644
 +	HAVE_ARMv5 = 1
 +	LOW_MEMORY = 1
 +	BUILTIN_GPU = neon
-+	use_cyclone = 0
-+	use_fame = 1
++	use_cyclone = 1
++	use_fame = 0
 +	use_drz80 = 1
 +	use_cz80 = 0
 +	use_sh2drc = 1

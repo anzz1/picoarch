@@ -85,7 +85,8 @@ pcsx_rearmed_REVISION = 131a1b41835bc0eba3e35998dce376163a0a1b14
 
 picodrive_REPO = https://github.com/irixxxx/picodrive
 picodrive_MAKEFILE = Makefile.libretro
-# picodrive_REVISION = 26d58060f4dd334c6ff02da0516ecec7a9fb251c # known good revision
+# use known good revision
+picodrive_REVISION = 44a6c6782356a47787c60517020e8e972a8ca95c
 
 pokemini_REPO = https://github.com/libretro/PokeMini
 pokemini_MAKEFILE = Makefile.libretro
