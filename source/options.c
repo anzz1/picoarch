@@ -16,7 +16,7 @@ unsigned audio_buffer_size;
 enum scale_size scale_size;
 // enum scale_filter scale_filter;
 enum scale_effect scale_effect;
-enum scale_effect default_scale_effect = SCALE_EFFECT_SCANLINE;
+enum scale_effect default_scale_effect = SCALE_EFFECT_NONE;
 int optimize_text;
 // int max_upscale;
 int max_ff_speed;

@@ -617,10 +617,10 @@ int main(int argc, char **argv) {
 	}
 	
 	if (argc > 3 && argv[3]) {
-		if (!strcmp(argv[3],"NONE")) default_scale_effect = SCALE_EFFECT_NONE;
+		if (!strcmp(argv[3],"SCANLINE")) default_scale_effect = SCALE_EFFECT_SCANLINE;
 		else if (!strcmp(argv[3],"DMG")) default_scale_effect = SCALE_EFFECT_DMG;
 		else if (!strcmp(argv[3],"LCD")) default_scale_effect = SCALE_EFFECT_LCD;
-		else default_scale_effect = SCALE_EFFECT_SCANLINE;
+		else default_scale_effect = SCALE_EFFECT_NONE;
 	}
 	
 	get_tag_name(content_path, tag_name);
