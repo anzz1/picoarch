@@ -55,14 +55,18 @@ me_bind_action mame2000_ctrl_actions[] =
 	{ "START    ",  1 << RETRO_DEVICE_ID_JOYPAD_START },
 	{ "COIN     ",  1 << RETRO_DEVICE_ID_JOYPAD_SELECT },
 	{ "OSD MENU ",  1 << RETRO_DEVICE_ID_JOYPAD_R2 },
+	{ "SERVICE  ",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
 	{ NULL,       0 }
 };
 
 me_bind_action mame2000_emu_actions[] =
 {
+	// { "Save State       ", 1 << EACTION_SAVE_STATE },
+	// { "Load State       ", 1 << EACTION_LOAD_STATE },
 	{ "Toggle FPS/CPU%  ", 1 << EACTION_TOGGLE_HUD },
 	{ "Toggle FF        ", 1 << EACTION_TOGGLE_FF },
-	{ "Take Screenshot  ", 1 << EACTION_SCREENSHOT },
+	{ "Reset            ", 1 << EACTION_RESET },
+	// { "Take Screenshot  ", 1 << EACTION_SCREENSHOT },
 	{ NULL,                0 }
 };
 

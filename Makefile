@@ -77,6 +77,8 @@ snes9x_REPO = https://github.com/libretro/snes9x
 gme_REPO = https://github.com/libretro/libretro-gme
 
 mame2000_REPO = https://github.com/libretro/mame2000-libretro
+# mame2000_REVISION = 720b8ad4cbd76abd57b9aeced9ba541dc8476f7f # known good revision
+
 mame2003_plus_REPO = https://github.com/libretro/mame2003-plus-libretro
 
 pcsx_rearmed_MAKEFILE = Makefile.libretro

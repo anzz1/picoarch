@@ -1,0 +1,164 @@
+diff --git a/a/src/inptport.c b/b/src/inptport.c
+index bd2712a..0ba0c24 100644
+--- a/a/src/inptport.c
++++ b/b/src/inptport.c
+@@ -1846,7 +1846,7 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
+     char menu_item_sub[100][256];
+     char menu_subitem_sub[100][256];
+     char flag[100];
+-    int sel,sel_af_on,sel_af_off,sel_return;
++    int sel, /* sel_af_on,sel_af_off, */ sel_return;
+     int total;
+     int arrowize;
+ 
+@@ -1874,6 +1874,7 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
+ 	}
+     }
+ 
++#if 0
+     /* auto-fire on menu */
+     sel_af_on = total;
+     flag[total] = 0;
+@@ -1885,6 +1886,7 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
+     flag[total] = 0;
+     menu_subitem[total] = code_name(af_fire_off[0]);
+     menu_item[total ++] = "Auto-Fire Off ";
++#endif
+ 
+     /* Return to Main Menu */
+     sel_return = total;
+@@ -1909,10 +1911,12 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
+             sel &= 0xff;
+             schedule_full_refresh();
+             if (seq_get_1(&seq) != CODE_NONE) {
++#if 0
+                 if (sel == sel_af_on)
+                     af_fire_on[0] = seq_get_1(&seq);
+                 else if (sel==sel_af_off)
+                     af_fire_off[0] = seq_get_1(&seq);
++#endif
+             }
+         }
+         return sel + 1;
+@@ -1951,12 +1955,14 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
+     if (input_ui_pressed(IPT_UI_SELECT)) {
+         if (sel == sel_return)
+             sel = -1;
++#if 0
+         else if ((sel == sel_af_on) || (sel == sel_af_off)) {
+             seq_read_async_start();
+             sel |= 1 << SEL_BITS;	/* we'll ask for a key */
+ /*			sel |= 0x100;	   we'll ask for a key */
+             schedule_full_refresh();
+         }
++#endif
+     }
+ 
+     if (input_ui_pressed(IPT_UI_CANCEL))
+diff --git a/a/src/usrintrf.c b/b/src/usrintrf.c
+index 147ee46..ca308df 100644
+--- a/a/src/usrintrf.c
++++ b/b/src/usrintrf.c
+@@ -2757,8 +2757,8 @@ int memcard_menu(struct osd_bitmap *bitmap, int selection)
+ 
+ 
+ #ifndef MESS
+-enum { UI_SWITCH = 0,UI_DEFCODE,UI_CODE,UI_ANALOG,UI_CALIBRATE,
+-		UI_STATS,UI_GAMEINFO, UI_HISTORY,
++enum { UI_SWITCH = 0, /* UI_DEFCODE,UI_CODE,UI_ANALOG,UI_CALIBRATE, */
++		UI_STATS,UI_GAMEINFO, /* UI_HISTORY, */
+ #ifdef ENABLE_AUTOFIRE
+ 		UI_CHEAT,UI_AUTOFIRE,UI_RESET,UI_MEMCARD,UI_EXIT };
+ #else
+@@ -2780,9 +2780,10 @@ static int menu_total;
+ static void setup_menu_init(void)
+ {
+ 	menu_total = 0;
+-
++#if 0
+ 	menu_item[menu_total] = ui_getstring (UI_inputgeneral); menu_action[menu_total++] = UI_DEFCODE;
+ 	menu_item[menu_total] = ui_getstring (UI_inputspecific); menu_action[menu_total++] = UI_CODE;
++#endif
+ 	menu_item[menu_total] = ui_getstring (UI_dipswitches); menu_action[menu_total++] = UI_SWITCH;
+ 
+ 	/* Determine if there are any analog controls */
+@@ -2801,22 +2802,28 @@ static void setup_menu_init(void)
+ 			in++;
+ 		}
+ 
++#if 0
+ 		if (num != 0)
+ 		{
+ 			menu_item[menu_total] = ui_getstring (UI_analogcontrols); menu_action[menu_total++] = UI_ANALOG;
+ 		}
++#endif
+ 	}
+ 
++#if 0
+ 	/* Joystick calibration possible? */
+ 	if ((osd_joystick_needs_calibration()) != 0)
+ 	{
+ 		menu_item[menu_total] = ui_getstring (UI_calibrate); menu_action[menu_total++] = UI_CALIBRATE;
+ 	}
++#endif
+ 
+ #ifndef MESS
+ 	menu_item[menu_total] = ui_getstring (UI_bookkeeping); menu_action[menu_total++] = UI_STATS;
+ 	menu_item[menu_total] = ui_getstring (UI_gameinfo); menu_action[menu_total++] = UI_GAMEINFO;
++#if 0
+ 	menu_item[menu_total] = ui_getstring (UI_history); menu_action[menu_total++] = UI_HISTORY;
++#endif
+ #else
+ 	menu_item[menu_total] = ui_getstring (UI_imageinfo); menu_action[menu_total++] = UI_IMAGEINFO;
+ 	menu_item[menu_total] = ui_getstring (UI_filemanager); menu_action[menu_total++] = UI_FILEMANAGER;
+@@ -2871,6 +2878,7 @@ static int setup_menu(struct osd_bitmap *bitmap, int selected)
+ 			case UI_SWITCH:
+ 				res = setdipswitches(bitmap, sel >> SEL_BITS);
+ 				break;
++#if 0
+ 			case UI_DEFCODE:
+ 				res = setdefcodesettings(bitmap, sel >> SEL_BITS);
+ 				break;
+@@ -2883,6 +2891,7 @@ static int setup_menu(struct osd_bitmap *bitmap, int selected)
+ 			case UI_CALIBRATE:
+ 				res = calibratejoysticks(bitmap, sel >> SEL_BITS);
+ 				break;
++#endif
+ #ifndef MESS
+ 			case UI_STATS:
+ 				res = mame_stats(bitmap, sel >> SEL_BITS);
+@@ -2902,9 +2911,11 @@ static int setup_menu(struct osd_bitmap *bitmap, int selected)
+ 				res = tapecontrol(bitmap, sel >> SEL_BITS);
+ 				break;
+ #endif
++#if 0
+ 			case UI_HISTORY:
+ 				res = displayhistory(bitmap, sel >> SEL_BITS);
+ 				break;
++#endif
+ 			case UI_CHEAT:
+ 				res = cheat_menu(bitmap, sel >> SEL_BITS);
+ 				break;
+@@ -2945,10 +2956,12 @@ static int setup_menu(struct osd_bitmap *bitmap, int selected)
+ 			case UI_AUTOFIRE:
+ #endif
+ 			case UI_SWITCH:
++#if 0
+ 			case UI_DEFCODE:
+ 			case UI_CODE:
+ 			case UI_ANALOG:
+ 			case UI_CALIBRATE:
++#endif
+ 			#ifndef MESS
+ 			case UI_STATS:
+ 			case UI_GAMEINFO:
+@@ -2958,7 +2971,9 @@ static int setup_menu(struct osd_bitmap *bitmap, int selected)
+ 			case UI_FILEMANAGER:
+ 			case UI_TAPECONTROL:
+ 			#endif
++#if 0
+ 			case UI_HISTORY:
++#endif
+ 			case UI_CHEAT:
+ 			case UI_MEMCARD:
+ 				sel |= 1 << SEL_BITS;

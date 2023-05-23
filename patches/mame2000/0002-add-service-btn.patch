@@ -1,0 +1,60 @@
+diff --git a/src/libretro/libretro.c b/src/libretro/libretro.c
+--- a/src/libretro/libretro.c
++++ b/src/libretro/libretro.c
+@@ -356,6 +356,7 @@ static void update_input(void)
+ 	input_poll_cb();
+ 	
+ 	key[KEY_TAB] = 0;
++	key[KEY_9] = 0;
+ 	for (i = 0; i < 4; i++)
+ 	{
+ 		key[KEY_1 + i] = 0;
+@@ -389,6 +390,7 @@ static void update_input(void)
+ 		joy_pressed[c++] = JS(i, R);
+ 
+ 		key[KEY_TAB] |= JS(i, R2);
++		key[KEY_9] |= JS(i, L2);
+ 	}
+ 
+ 	key[KEY_A] =RK(0, a);
+@@ -426,7 +428,7 @@ static void update_input(void)
+ 	key[KEY_6] |=RK(0, 6);
+ 	key[KEY_7] |=RK(0, 7);
+ 	key[KEY_8] |=RK(0, 8);
+-	key[KEY_9] =RK(0, 9);
++	key[KEY_9] |=RK(0, 9);
+ 	key[KEY_0_PAD] =RK(0, KP0);
+ 	key[KEY_1_PAD] =RK(0, KP1);
+ 	key[KEY_2_PAD] =RK(0, KP2);
+@@ -753,6 +755,7 @@ bool retro_load_game(const struct retro_game_info *info)
+       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT,   "Coins" },
+       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START,    "Start" },
+       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2,     "OSD Menu" },
++      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2,     "Service" },
+ 
+       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
+       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
+@@ -767,6 +770,7 @@ bool retro_load_game(const struct retro_game_info *info)
+       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT,   "Coins" },
+       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START,    "Start" },
+       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2,     "OSD Menu" },
++      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2,     "Service" },
+ 
+       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
+       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
+@@ -781,6 +785,7 @@ bool retro_load_game(const struct retro_game_info *info)
+       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT,   "Coins" },
+       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START,    "Start" },
+       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2,     "OSD Menu" },
++      { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2,     "Service" },
+ 
+       { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
+       { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
+@@ -795,6 +800,7 @@ bool retro_load_game(const struct retro_game_info *info)
+       { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT,   "Coins" },
+       { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START,    "Start" },
+       { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2,     "OSD Menu" },
++      { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2,     "Service" },
+ 
+       { 0, 0, 0, 0, NULL },
+    };
