@@ -113,7 +113,7 @@ ifeq ($(platform), trimui)
 	LDFLAGS += -fno-PIC
 else ifeq ($(platform), miyoomini)
 	OBJS += source/plat_miyoomini.o
-	CFLAGS += -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -fPIC -DCONTENT_DIR='"/mnt/SDCARD/Roms"'
+	CFLAGS += -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve+simd -fPIC -DCONTENT_DIR='"/mnt/SDCARD/Roms"'
 	LDFLAGS += -fPIC -lmi_sys -lmi_gfx
 	MMENU=1
 	# PATCH=patch
