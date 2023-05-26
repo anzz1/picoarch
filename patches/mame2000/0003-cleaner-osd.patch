@@ -1,7 +1,6 @@
-diff --git a/a/src/inptport.c b/b/src/inptport.c
-index bd2712a..0ba0c24 100644
---- a/a/src/inptport.c
-+++ b/b/src/inptport.c
+diff --git a/src/inptport.c b/src/inptport.c
+--- a/src/inptport.c
++++ b/src/inptport.c
 @@ -1846,7 +1846,7 @@ int autofire_menu(struct osd_bitmap *bitmap, int selected)
      char menu_item_sub[100][256];
      char menu_subitem_sub[100][256];
@@ -55,10 +54,9 @@ index bd2712a..0ba0c24 100644
      }
  
      if (input_ui_pressed(IPT_UI_CANCEL))
-diff --git a/a/src/usrintrf.c b/b/src/usrintrf.c
-index 147ee46..ca308df 100644
---- a/a/src/usrintrf.c
-+++ b/b/src/usrintrf.c
+diff --git a/src/usrintrf.c b/src/usrintrf.c
+--- a/src/usrintrf.c
++++ b/src/usrintrf.c
 @@ -2757,8 +2757,8 @@ int memcard_menu(struct osd_bitmap *bitmap, int selection)
  
  

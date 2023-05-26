@@ -24,9 +24,9 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lpng12 -lz -Wl,--gc-sections -flto
 PATCH = git apply
 
 # Extra cores that build
-# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx
+# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx beetle-vb
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
-CORES+= beetle-vb fake-08 prboom beetle-ngp beetle-supergrafx $(EXTRA_CORES)
+CORES+= fake-08 prboom beetle-ngp beetle-supergrafx mame2000 $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
 

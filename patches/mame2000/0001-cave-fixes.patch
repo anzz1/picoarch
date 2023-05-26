@@ -11,7 +11,6 @@ diff --git a/src/driver.c b/src/driver.c
  	/* Kyugo games */
  	/* Kyugo only made four games: Repulse, Flash Gal, SRD Mission and Air Wolf. */
 diff --git a/src/drivers/cave.c b/src/drivers/cave.c
-index 507e3ad..dfa50fb 100644
 --- a/src/drivers/cave.c
 +++ b/src/drivers/cave.c
 @@ -235,7 +235,7 @@ WRITE_HANDLER( guwange_eeprom_w )
@@ -169,9 +168,17 @@ index 507e3ad..dfa50fb 100644
 +GAME( 1998, uopoko,   0, uopoko,   dfeveron, dfeveron_uopoko,   ROT0_16BIT,   "Cave (Jaleco license)",       "Uo Poko (Japan)"        )
 +GAME( 1999, guwange,  0, guwange,  guwange,  esprade_guwange,  ROT270_16BIT, "Atlus/Cave",                  "Guwange (Japan)"        )
 diff --git a/src/libretro/frontend_list.h b/src/libretro/frontend_list.h
-index 2316acf..ba65c0a 100644
 --- a/src/libretro/frontend_list.h
 +++ b/src/libretro/frontend_list.h
+@@ -9,7 +9,7 @@ struct fe_driver {
+ 	int available;
+ };
+ 
+-#define NUMGAMES 2270
++#define NUMGAMES 2271
+ 
+ struct fe_driver fe_drivers[NUMGAMES] = {
+ 
 @@ -792,6 +792,7 @@ struct fe_driver fe_drivers[NUMGAMES] = {
  { "Gunforce - Battle Fire Engulfed Terror Island (World)"                                                 ,"gunforce"     , "mame", 3, 0 } ,												
  { "Gururin"                                                                                               ,"gururin"      , "neomame", 3, 0 } ,												
@@ -181,7 +188,6 @@ index 2316acf..ba65c0a 100644
  { "Gypsy Juggler"                                                                                         ,"gypsyjug"     , "mame", 3, 0 } ,												
  { "Gyrodine"                                                                                              ,"gyrodine"     , "mame", 3, 0 } ,												
 diff --git a/src/libretro/libretro.c b/src/libretro/libretro.c
-index 7fd3662..48f079a 100644
 --- a/src/libretro/libretro.c
 +++ b/src/libretro/libretro.c
 @@ -844,7 +844,8 @@ bool retro_load_game(const struct retro_game_info *info)
