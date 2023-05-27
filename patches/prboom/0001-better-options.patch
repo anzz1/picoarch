@@ -26,9 +26,9 @@ diff --git a/libretro/libretro.c b/libretro/libretro.c
 -		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Strafe" },
 -		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Use" },
 -		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Fire" },
-+		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Fire" },
-+		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Use" },
-+		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Strafe" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Use" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Strafe" },
++		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Fire" },
  		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y,      "Run" },
  		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L,      "Strafe Left" },
  		{ 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R,      "Strafe Right" },
@@ -52,7 +52,7 @@ diff --git a/libretro/libretro.c b/libretro/libretro.c
 -		{ &key_weaponcycleup,   &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_R2
 -		{ &key_autorun,         &key_menu_enter },     // RETRO_DEVICE_ID_JOYPAD_L3
 -		{ &key_reverse,         &key_menu_backspace }, // RETRO_DEVICE_ID_JOYPAD_R3
-+		{ &key_use,             &key_menu_backspace },  // RETRO_DEVICE_ID_JOYPAD_B
++		{ &key_strafe,          &key_menu_backspace },  // RETRO_DEVICE_ID_JOYPAD_B
 +		{ &key_speed,           &key_speed },           // RETRO DEVICE_ID_JOYPAD_Y
 +		{ &key_map,             &key_menu_backspace },  // RETRO_DEVICE_ID_JOYPAD_SELECT
 +		{ &key_menu_escape,     &key_menu_escape },     // RETRO_DEVICE_ID_JOYPAD_START
@@ -60,8 +60,8 @@ diff --git a/libretro/libretro.c b/libretro/libretro.c
 +		{ &key_down,            &key_menu_down },       // RETRO_DEVICE_ID_JOYPAD_DOWN
 +		{ &key_left,            &key_menu_left },       // RETRO_DEVICE_ID_JOYPAD_LEFT
 +		{ &key_right,           &key_menu_right },      // RETRO_DEVICE_ID_JOYPAD_RIGHT
-+		{ &key_fire,            &key_menu_enter },      // RETRO_DEVICE_ID_JOYPAD_A
-+		{ &key_strafe,          &key_strafe },          // RETRO_DEVICE_ID_JOYPAD_X
++		{ &key_use,             &key_menu_enter },      // RETRO_DEVICE_ID_JOYPAD_A
++		{ &key_fire,            &key_fire },            // RETRO_DEVICE_ID_JOYPAD_X
 +		{ &key_strafeleft,      &key_strafeleft },      // RETRO_DEVICE_ID_JOYPAD_L1
 +		{ &key_straferight,     &key_straferight },     // RETRO_DEVICE_ID_JOYPAD_R1
 +		{ &key_weaponcycledown, &key_weaponcycledown }, // RETRO_DEVICE_ID_JOYPAD_L2

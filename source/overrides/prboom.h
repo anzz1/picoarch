@@ -38,20 +38,20 @@ static const struct core_override_option prboom_core_option_overrides[] = {
 
 me_bind_action prboom_ctrl_actions[] =
 {
-	{ "UP           ",  1 << RETRO_DEVICE_ID_JOYPAD_UP},
-	{ "DOWN         ",  1 << RETRO_DEVICE_ID_JOYPAD_DOWN },
-	{ "LEFT         ",  1 << RETRO_DEVICE_ID_JOYPAD_LEFT },
-	{ "RIGHT        ",  1 << RETRO_DEVICE_ID_JOYPAD_RIGHT },
-	{ "FIRE/CONFIRM ",  1 << RETRO_DEVICE_ID_JOYPAD_A },
-	{ "USE/CANCEL   ",  1 << RETRO_DEVICE_ID_JOYPAD_B },
-	{ "STRAFE       ",  1 << RETRO_DEVICE_ID_JOYPAD_X },
-	{ "RUN          ",  1 << RETRO_DEVICE_ID_JOYPAD_Y },
-	{ "STRAFE LEFT  ",  1 << RETRO_DEVICE_ID_JOYPAD_L },
-	{ "STRAFE RIGHT ",  1 << RETRO_DEVICE_ID_JOYPAD_R },
-	{ "PREV WEAPON  ",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
-	{ "NEXT WEAPON  ",  1 << RETRO_DEVICE_ID_JOYPAD_R2 },
-	{ "MAP          ",  1 << RETRO_DEVICE_ID_JOYPAD_SELECT },
-	{ "MENU         ",  1 << RETRO_DEVICE_ID_JOYPAD_START },
+	{ "UP            ",  1 << RETRO_DEVICE_ID_JOYPAD_UP},
+	{ "DOWN          ",  1 << RETRO_DEVICE_ID_JOYPAD_DOWN },
+	{ "LEFT          ",  1 << RETRO_DEVICE_ID_JOYPAD_LEFT },
+	{ "RIGHT         ",  1 << RETRO_DEVICE_ID_JOYPAD_RIGHT },
+	{ "USE/CONFIRM   ",  1 << RETRO_DEVICE_ID_JOYPAD_A },
+	{ "STRAFE/CANCEL ",  1 << RETRO_DEVICE_ID_JOYPAD_B },
+	{ "FIRE          ",  1 << RETRO_DEVICE_ID_JOYPAD_X },
+	{ "RUN           ",  1 << RETRO_DEVICE_ID_JOYPAD_Y },
+	{ "STRAFE LEFT   ",  1 << RETRO_DEVICE_ID_JOYPAD_L },
+	{ "STRAFE RIGHT  ",  1 << RETRO_DEVICE_ID_JOYPAD_R },
+	{ "PREV WEAPON   ",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
+	{ "NEXT WEAPON   ",  1 << RETRO_DEVICE_ID_JOYPAD_R2 },
+	{ "MAP           ",  1 << RETRO_DEVICE_ID_JOYPAD_SELECT },
+	{ "MENU          ",  1 << RETRO_DEVICE_ID_JOYPAD_START },
 	{ NULL, 0 }
 };
 
