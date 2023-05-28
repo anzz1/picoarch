@@ -23,6 +23,11 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lpng12 -lz -Wl,--gc-sections -flto
 
 PATCH = git apply
 
+GIT_VER_GTE2_26 := $(shell echo `git --version | cut -f3 -d' ' | cut -f1-2 -d.` \>= 2.26 | bc )
+ifeq "$(GIT_VER_GTE2_26)" "1"
+	GIT_SINGLE_BRANCH=--single-branch
+endif
+
 # Extra cores that build
 # EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx beetle-vb
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
@@ -187,15 +192,12 @@ $1_MAKE = make $(and $($1_MAKEFILE),-f $($1_MAKEFILE)) platform=$(platform) $(an
 
 clone-$(1):
 	mkdir -p cores
-	cd cores && git clone $(if $($1_REVISION),,--depth 1) --recursive $$($(1)_REPO) $(1)
-	$(if $1_REVISION,cd $$($1_BUILD_PATH) && git checkout $($1_REVISION),)
+	$(if $($1_REVISION),cd cores && git init $(1) && cd $(1) && git remote add origin $$($(1)_REPO) && git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin $($1_REVISION) && git reset --hard FETCH_HEAD && git submodule sync --recursive && git submodule update --init --depth=1 $(GIT_SINGLE_BRANCH) --recursive,cd cores && git clone --depth=1 --recurse-submodules --shallow-submodules $$($(1)_REPO) $(1))
 
 cores/$(1):
 	mkdir -p cores
-	cd cores && git clone $(if $($1_REVISION),,--depth 1) --recursive $$($(1)_REPO) $(1)
-	$(if $1_REVISION,cd $$($1_BUILD_PATH) && git checkout $($1_REVISION),)
+	$(if $($1_REVISION),cd cores && git init $(1) && cd $(1) && git remote add origin $$($(1)_REPO) && git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin $($1_REVISION) && git reset --hard FETCH_HEAD && git submodule sync --recursive && git submodule update --init --depth=1 $(GIT_SINGLE_BRANCH) --recursive,cd cores && git clone --depth=1 --recurse-submodules --shallow-submodules $$($(1)_REPO) $(1))
 	(test ! -d patches/$(1)) || (cd cores/$(1) && $(foreach patch, $(sort $(wildcard patches/$(1)/*.patch)), $(PATCH) -p1 < ../../$(patch) &&) true)
-	# using ../../patches assumes BUILD_PATH is cores/$(1)
 
 $(1): cores/$(1)
 
