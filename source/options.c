@@ -14,6 +14,7 @@ int enable_audio;
 int enable_drc;
 unsigned audio_buffer_size;
 enum scale_size scale_size;
+enum scale_size default_scale_size = SCALE_SIZE_ASPECT;
 // enum scale_filter scale_filter;
 enum scale_effect scale_effect;
 enum scale_effect default_scale_effect = SCALE_EFFECT_NONE;

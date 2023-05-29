@@ -11,6 +11,7 @@ extern int enable_audio;
 extern int enable_drc;
 extern unsigned audio_buffer_size;
 extern enum scale_size scale_size;
+extern enum scale_size default_scale_size;
 // extern enum scale_filter scale_filter;
 extern enum scale_effect scale_effect;
 extern enum scale_effect default_scale_effect;

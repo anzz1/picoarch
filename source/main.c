@@ -224,13 +224,13 @@ void set_defaults(void)
 	enable_audio = 1;
 	enable_drc = 0;
 	audio_buffer_size = 5;
-	scale_size = SCALE_SIZE_ASPECT;
+	scale_size = default_scale_size;
 	// scale_filter = SCALE_FILTER_NEAREST;
 	scale_effect = default_scale_effect;
 	optimize_text = 1;
 	// max_upscale = 8;
 	max_ff_speed = 3; // == 4x
-	
+
 	scale_update_scaler();
 
 	if (current_audio_buffer_size < audio_buffer_size)
@@ -609,20 +609,26 @@ int main(int argc, char **argv) {
 	} else {
 		quit(-1);
 	}
-	
+
 	if (argc > 2 && argv[2]) {
 		strncpy(content_path, argv[2], sizeof(content_path) - 1);
 	} else {
 		quit(-1);
 	}
-	
+
 	if (argc > 3 && argv[3]) {
 		if (!strcmp(argv[3],"SCANLINE")) default_scale_effect = SCALE_EFFECT_SCANLINE;
 		else if (!strcmp(argv[3],"DMG")) default_scale_effect = SCALE_EFFECT_DMG;
 		else if (!strcmp(argv[3],"LCD")) default_scale_effect = SCALE_EFFECT_LCD;
 		else default_scale_effect = SCALE_EFFECT_NONE;
+
+		if (argc > 4 && argv[4]) {
+			if (!strcmp(argv[4],"NATIVE")) default_scale_size = SCALE_SIZE_NONE;
+			else if (!strcmp(argv[4],"FULL")) default_scale_size = SCALE_SIZE_FULL;
+			else default_scale_size = SCALE_SIZE_ASPECT;
+		}
 	}
-	
+
 	get_tag_name(content_path, tag_name);
 
 	core_extract_name(core_path, core_name, sizeof(core_name));
