@@ -12,6 +12,7 @@
 #include "overrides/mame2000.h"
 #include "overrides/mednafen_supafaust.h"
 #include "overrides/mgba.h"
+#include "overrides/mgba_sgb.h"
 #include "overrides/nxengine.h"
 #include "overrides/pcsx_rearmed.h"
 #include "overrides/picodrive.h"
@@ -38,6 +39,7 @@ static const struct core_override overrides[] = {
 	mame2000_overrides,
 	mednafen_supafaust_overrides,
 	mgba_overrides,
+	mgba_sgb_overrides,
 	nxengine_overrides,
 	pcsx_rearmed_overrides,
 	picodrive_overrides,

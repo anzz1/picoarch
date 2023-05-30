@@ -1,14 +1,6 @@
 #include "overrides.h"
 
-static const struct core_override_option mgba_core_option_overrides[] = {
-	{
-		.key = "mgba_gb_model",
-		.desc = "Game Boy Hardware",
-		.info = "(Restart) Loads content with a specific Game Boy model. 'auto' selects the most appropriate model for the game.",
-		.options = {
-			{ "Autodetect", "auto" }
-		}
-	},
+static const struct core_override_option mgba_sgb_core_option_overrides[] = {
 	{
 		.key = "mgba_use_bios",
 		.desc = "Use BIOS",
@@ -32,7 +24,7 @@ static const struct core_override_option mgba_core_option_overrides[] = {
 		.key = "mgba_gb_colors_preset",
 		.desc = "GB Color Preset",
 		.info = "(Restart) Palette preset to use if available. 'auto' selects the \"best\" / palette available.",
-		.default_value = "3",
+		.default_value = "2",
 		.options = {
 			{ "0", "Game Boy" },
 			{ "1", "Game Boy Color" },
@@ -66,17 +58,6 @@ static const struct core_override_option mgba_core_option_overrides[] = {
 		.info = "Enabling this will allow pressing both left and right (or up and down) directions at the same time."
 	},
 	{
-		.key = "mgba_solar_sensor_level",
-		.options = {
-			{"sensor", "" },
-		}
-	},
-	{
-		.key = "mgba_force_gbp",
-		.desc = "GBP Rumble",
-		.info = "(Restart) Allows Game Boy Player compatible games to use rumble. May cause glitches such as flickering or lag in some of these games.",
-	},
-	{
 		.key = "mgba_idle_optimization",
 		.info = "Reduce system load by optimizing idle loops. Improves performance, and should be disabled only if having problems.",
 		.options = {
@@ -105,10 +86,23 @@ static const struct core_override_option mgba_core_option_overrides[] = {
 		.desc = "FS Interval",
 		.info = "When 'Frameskip' is set to 'fixed', sets number of frames that are skipped before a new frame is rendered."
 	},
+	{
+		.key = "mgba_gb_model",
+		.default_value = "Super Game Boy",
+		.blocked = true
+	},
+	{
+		.key = "mgba_solar_sensor_level",
+		.blocked = true
+	},
+	{
+		.key = "mgba_force_gbp",
+		.blocked = true
+	},
 	{ NULL }
 };
 
-me_bind_action mgba_ctrl_actions[] =
+me_bind_action mgba_sgb_ctrl_actions[] =
 {
 	{ "UP       ",  1 << RETRO_DEVICE_ID_JOYPAD_UP},
 	{ "DOWN     ",  1 << RETRO_DEVICE_ID_JOYPAD_DOWN },
@@ -120,24 +114,18 @@ me_bind_action mgba_ctrl_actions[] =
 	{ "B TURBO  ",  1 << RETRO_DEVICE_ID_JOYPAD_Y },
 	{ "START    ",  1 << RETRO_DEVICE_ID_JOYPAD_START },
 	{ "SELECT   ",  1 << RETRO_DEVICE_ID_JOYPAD_SELECT },
-	{ "L BUTTON ",  1 << RETRO_DEVICE_ID_JOYPAD_L },
-	{ "R BUTTON ",  1 << RETRO_DEVICE_ID_JOYPAD_R },
-	{ "SOLAR -  ",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
-	{ "SOLAR +  ",  1 << RETRO_DEVICE_ID_JOYPAD_R2 },
-	{ "L TURBO  ",  1 << RETRO_DEVICE_ID_JOYPAD_L3 },
-	{ "R TURBO  ",  1 << RETRO_DEVICE_ID_JOYPAD_R3 },
 	{ NULL,       0 }
 };
 
-const struct core_override_fast_forward mgba_fast_forward = {
+const struct core_override_fast_forward mgba_sgb_fast_forward = {
 	.type_key = "mgba_frameskip",
 	.interval_key = "mgba_frameskip_interval"
 };
 
-#define mgba_overrides {                            \
-	.core_name = "mgba",                            \
-	.fast_forward = &mgba_fast_forward,             \
-	.actions = mgba_ctrl_actions,                   \
-	.action_size = array_size(mgba_ctrl_actions),   \
-	.options = mgba_core_option_overrides           \
+#define mgba_sgb_overrides {                            \
+	.core_name = "mgba_sgb",                            \
+	.fast_forward = &mgba_sgb_fast_forward,             \
+	.actions = mgba_sgb_ctrl_actions,                   \
+	.action_size = array_size(mgba_sgb_ctrl_actions),   \
+	.options = mgba_sgb_core_option_overrides           \
 }

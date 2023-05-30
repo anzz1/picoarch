@@ -1,0 +1,231 @@
+diff --git a/libretro-build/Makefile.common b/libretro-build/Makefile.common
+--- a/libretro-build/Makefile.common
++++ b/libretro-build/Makefile.common
+@@ -1,6 +1,17 @@
+ #plain 'make' doesn't include the file that sets this. force it set anyways.
+-RETRODEFS ?= -D__LIBRETRO__
+-RETRODEFS += -DMINIMAL_CORE=2 -DM_CORE_GBA -DM_CORE_GB
++RETRODEFS  ?= -D__LIBRETRO__
++RETRODEFS  += -DMINIMAL_CORE=2
++M_CORE_GB  ?= 1
++M_CORE_GBA ?= 1
++
++ifeq ($(M_CORE_GB),1)
++	RETRODEFS += -DM_CORE_GB
++else ifneq ($(M_CORE_GBA),1)
++	$(error No GB or GBA core defined)
++endif
++ifeq ($(M_CORE_GBA),1)
++	RETRODEFS += -DM_CORE_GBA
++endif
+ 
+ INCLUDES  += -I$(CORE_DIR)/src -I$(CORE_DIR)/src/arm -I$(CORE_DIR)/include -I$(CORE_DIR)/src/platform/libretro
+ RETRODEFS += -DHAVE_STDINT_H -DHAVE_INTTYPES_H -DINLINE=inline -DCOLOR_16_BIT -DRESAMPLE_LIBRARY=2 -DM_PI=3.14159265358979323846 -DMGBA_STANDALONE
+diff --git a/src/platform/libretro/libretro.c b/src/platform/libretro/libretro.c
+--- a/src/platform/libretro/libretro.c
++++ b/src/platform/libretro/libretro.c
+@@ -71,8 +71,6 @@ static void GBARetroLog(struct mLogger* logger, int category, enum mLogLevel lev
+ 
+ static void _postAudioBuffer(struct mAVStream*, blip_t* left, blip_t* right);
+ static void _setRumble(struct mRumble* rumble, int enable);
+-static uint8_t _readLux(struct GBALuminanceSource* lux);
+-static void _updateLux(struct GBALuminanceSource* lux);
+ static void _updateCamera(const uint32_t* buffer, unsigned width, unsigned height, size_t pitch);
+ static void _startImage(struct mImageSource*, unsigned w, unsigned h, int colorFormats);
+ static void _stopImage(struct mImageSource*);
+@@ -82,6 +80,16 @@ static int32_t _readTiltX(struct mRotationSource* source);
+ static int32_t _readTiltY(struct mRotationSource* source);
+ static int32_t _readGyroZ(struct mRotationSource* source);
+ 
++#ifdef M_CORE_GBA
++static uint8_t _readLux(struct GBALuminanceSource* lux);
++static void _updateLux(struct GBALuminanceSource* lux);
++static struct GBALuminanceSource lux;
++static int luxLevelIndex;
++static uint8_t luxLevel;
++static bool luxSensorEnabled;
++static bool luxSensorUsed;
++#endif
++
+ static struct mCore* core;
+ static color_t* outputBuffer = NULL;
+ static int16_t *audioSampleBuffer = NULL;
+@@ -96,14 +104,9 @@ static bool rumbleInitDone;
+ static int rumbleUp;
+ static int rumbleDown;
+ static struct mRumble rumble;
+-static struct GBALuminanceSource lux;
+ static struct mRotationSource rotation;
+ static bool tiltEnabled;
+ static bool gyroEnabled;
+-static int luxLevelIndex;
+-static uint8_t luxLevel;
+-static bool luxSensorEnabled;
+-static bool luxSensorUsed;
+ static struct mLogger logger;
+ static struct retro_camera_callback cam;
+ static struct mImageSource imageSource;
+@@ -1113,9 +1116,11 @@ static void _initSensors(void) {
+ 				gyroEnabled = true;
+ 			}
+ 
++#ifdef M_CORE_GBA
+ 			if (sensorStateCallback(0, RETRO_SENSOR_ILLUMINANCE_ENABLE, EVENT_RATE)) {
+ 				luxSensorEnabled = true;
+ 			}
++#endif
+ 		}
+ 	}
+ 
+@@ -1266,7 +1271,7 @@ static void _doDeferredSetup(void) {
+ 	// On the off-hand chance that a core actually expects its buffers to be populated when
+ 	// you actually first get them, you're out of luck without workarounds. Yup, seriously.
+ 	// Here's that workaround, but really the API needs to be thrown out and rewritten.
+-	struct VFile* save = VFileFromMemory(savedata, SIZE_CART_FLASH1M);
++	struct VFile* save = VFileFromMemory(savedata, 0x00020000 /* SIZE_CART_FLASH1M */ );
+ 	if (!core->loadSave(core, save)) {
+ 		save->close(save);
+ 	}
+@@ -1414,6 +1419,8 @@ void retro_init(void) {
+ 	rotation.readGyroZ = _readGyroZ;
+ 
+ 	envVarsUpdated = true;
++
++#ifdef M_CORE_GBA
+ 	luxSensorUsed = false;
+ 	luxSensorEnabled = false;
+ 	luxLevelIndex = 0;
+@@ -1421,6 +1428,7 @@ void retro_init(void) {
+ 	lux.readLuminance = _readLux;
+ 	lux.sample = _updateLux;
+ 	_updateLux(&lux);
++#endif // M_CORE_GBA
+ 
+ 	struct retro_log_callback log;
+ 	if (environCallback(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log)) {
+@@ -1518,14 +1526,18 @@ void retro_deinit(void) {
+ 	if (sensorStateCallback) {
+ 		sensorStateCallback(0, RETRO_SENSOR_ACCELEROMETER_DISABLE, EVENT_RATE);
+ 		sensorStateCallback(0, RETRO_SENSOR_GYROSCOPE_DISABLE, EVENT_RATE);
++#ifdef M_CORE_GBA
+ 		sensorStateCallback(0, RETRO_SENSOR_ILLUMINANCE_DISABLE, EVENT_RATE);
++#endif
+ 		sensorGetCallback = NULL;
+ 		sensorStateCallback = NULL;
+ 	}
+ 
+ 	tiltEnabled = false;
+ 	gyroEnabled = false;
++#ifdef M_CORE_GBA
+ 	luxSensorEnabled = false;
++#endif
+ 	sensorsInitDone = false;
+ 	useBitmasks = false;
+ 
+@@ -1628,6 +1640,7 @@ void retro_run(void) {
+ 
+ 	core->setKeys(core, keys);
+ 
++#ifdef M_CORE_GBA
+ 	if (!luxSensorUsed) {
+ 		static bool wasAdjustingLux = false;
+ 		if (wasAdjustingLux) {
+@@ -1649,6 +1662,7 @@ void retro_run(void) {
+ 			}
+ 		}
+ 	}
++#endif
+ 
+ 	/* Check whether current frame should
+ 	 * be skipped */
+@@ -2104,8 +2118,8 @@ bool retro_load_game(const struct retro_game_info* game) {
+ 	core->setPeripheral(core, mPERIPH_RUMBLE, &rumble);
+ 	core->setPeripheral(core, mPERIPH_ROTATION, &rotation);
+ 
+-	savedata = anonymousMemoryMap(SIZE_CART_FLASH1M);
+-	memset(savedata, 0xFF, SIZE_CART_FLASH1M);
++	savedata = anonymousMemoryMap(0x00020000 /* SIZE_CART_FLASH1M */);
++	memset(savedata, 0xFF, 0x00020000 /* SIZE_CART_FLASH1M */);
+ 
+ 	_reloadSettings();
+ 	core->loadROM(core, rom);
+@@ -2185,7 +2199,7 @@ void retro_unload_game(void) {
+ 	core->deinit(core);
+ 	mappedMemoryFree(data, dataSize);
+ 	data = 0;
+-	mappedMemoryFree(savedata, SIZE_CART_FLASH1M);
++	mappedMemoryFree(savedata, 0x00020000 /* SIZE_CART_FLASH1M */);
+ 	savedata = 0;
+ }
+ 
+@@ -2402,10 +2416,19 @@ size_t retro_get_memory_size(unsigned id) {
+ 			break;
+ 		}
+ 		break;
++#if defined(M_CORE_GBA)
+ 	case RETRO_MEMORY_SYSTEM_RAM:
+ 		return SIZE_WORKING_RAM;
+ 	case RETRO_MEMORY_VIDEO_RAM:
+ 		return SIZE_VRAM;
++#elif defined(M_CORE_GB)
++	case RETRO_MEMORY_SYSTEM_RAM:
++		return GB_SIZE_WORKING_RAM;
++	case RETRO_MEMORY_VIDEO_RAM:
++		return GB_SIZE_VRAM;
++#else
++#error "No GBA or GB core defined"
++#endif
+ 	default:
+ 		break;
+ 	}
+@@ -2486,6 +2509,7 @@ static void _setRumble(struct mRumble* rumble, int enable) {
+ 	}
+ }
+ 
++#ifdef M_CORE_GBA
+ static void _updateLux(struct GBALuminanceSource* lux) {
+ 	UNUSED(lux);
+ 	struct retro_variable var = {
+@@ -2535,6 +2559,7 @@ static uint8_t _readLux(struct GBALuminanceSource* lux) {
+ 	UNUSED(lux);
+ 	return 0xFF - luxLevel;
+ }
++#endif // M_CORE_GBA
+ 
+ static void _updateCamera(const uint32_t* buffer, unsigned width, unsigned height, size_t pitch) {
+ 	if (!camData || width > camWidth || height > camHeight) {
+diff --git a/src/platform/libretro/libretro_core_options.h b/src/platform/libretro/libretro_core_options.h
+--- a/src/platform/libretro/libretro_core_options.h
++++ b/src/platform/libretro/libretro_core_options.h
+@@ -128,6 +128,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       },
+       "OFF"
+    },
++#ifdef M_CORE_GB
+    {
+       "mgba_gb_colors",
+       "Default Game Boy Palette",
+@@ -172,6 +173,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       },
+       "ON"
+    },
++#endif // M_CORE_GB
+ #if defined(COLOR_16_BIT) && defined(COLOR_5_6_5)
+    {
+       "mgba_color_correction",
+@@ -266,6 +268,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       },
+       "no"
+    },
++#ifdef M_CORE_GBA
+    {
+       "mgba_solar_sensor_level",
+       "Solar Sensor Level",
+@@ -290,6 +293,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       },
+       "0"
+    },
++#endif // M_CORE_GBA
+    {
+       "mgba_force_gbp",
+       "Game Boy Player Rumble (Restart)",

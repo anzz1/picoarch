@@ -1,5 +1,4 @@
 diff --git a/src/platform/libretro/libretro.c b/src/platform/libretro/libretro.c
-index 5726fe654bc0dde07bc28bd6eecd6ba6a64ceb55..4ffbdbb360ac46e5a5ed42924f8e68258737a4f6 100644
 --- a/src/platform/libretro/libretro.c
 +++ b/src/platform/libretro/libretro.c
 @@ -1453,6 +1453,48 @@ void retro_init(void) {
