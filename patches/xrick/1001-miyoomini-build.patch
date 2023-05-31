@@ -1,0 +1,33 @@
+diff --git a/Makefile.libretro b/Makefile.libretro
+--- a/Makefile.libretro
++++ b/Makefile.libretro
+@@ -163,6 +163,29 @@ else ifeq ($(platform), miyoo)
+ 	fpic := -fPIC
+ 	CFLAGS += -mcpu=arm926ej-s
+ 
++# MIYOOMINI
++else ifeq ($(platform),miyoomini)
++	TARGET := $(TARGET_NAME)_libretro.so
++	CC = $(CROSS_COMPILE)gcc
++	CPP = $(CROSS_COMPILE)gcc -E
++	CXX = $(CROSS_COMPILE)g++
++	AR = $(CROSS_COMPILE)ar
++	fpic := -fPIC
++	SHARED := -shared -Wl,--version-script=$(CORE_DIR)/libretro/core/link.T -Wl,--no-undefined
++	CFLAGS += -Ofast -fPIC -flto=4 -fipa-pta -fipa-ra -fuse-linker-plugin
++	CFLAGS += -falign-functions=1 -falign-jumps=1 -falign-loops=1
++	CFLAGS += -fno-stack-protector -fno-ident -fomit-frame-pointer
++	CFLAGS += -fno-unwind-tables -fno-asynchronous-unwind-tables
++	CFLAGS += -fmerge-all-constants -fno-math-errno -ffast-math 
++	CFLAGS += -ftree-vectorize -funswitch-loops -funroll-loops -fno-common
++	CFLAGS += -fdata-sections -ffunction-sections -Wl,-s -Wl,--gc-sections
++	CFLAGS += -marm -march=armv7ve+simd -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
++	CFLAGS += -std=c99 -D_GNU_SOURCE -DHAVE_NO_LANGEXTRA
++	LDFLAGS += -fPIC -flto=4 -fipa-pta -fipa-ra
++	LDFLAGS += -Wl,-s -Wl,--gc-sections 
++	ARCH = arm
++	HAVE_NEON = 1
++
+ # Nintendo Game Cube
+ else ifeq ($(platform), ngc)
+    TARGET := $(TARGET_NAME)_libretro_ngc.a

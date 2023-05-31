@@ -31,7 +31,7 @@ endif
 # Extra cores that build
 # EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx beetle-vb
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba mgba_sgb smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
-CORES+= fake-08 prboom beetle-ngp beetle-supergrafx mame2000 $(EXTRA_CORES)
+CORES+= fake-08 prboom beetle-ngp beetle-supergrafx mame2000 xrick $(EXTRA_CORES)
 
 # *_BUILD_PATH seems to assume the makefile is present in the root of the repo
 
@@ -120,6 +120,9 @@ mgba_sgb_REPO = https://github.com/libretro/mgba
 mgba_sgb_FLAGS = TARGET_NAME=mgba_sgb
 # 0.9.3 / pre 0.10.0
 mgba_sgb_REVISION = 5d48e0744059ebf38a4e937b256ffd5df4e0d103
+
+xrick_REPO = https://github.com/libretro/xrick-libretro
+# xrick_REVISION = c433c1080409fefcfb69d66dc6416967ff5f6735 # known good version
 
 ifeq ($(platform), trimui)
 	OBJS += source/plat_trimui.o
