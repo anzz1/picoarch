@@ -86,7 +86,7 @@ me_bind_action beetle_supergrafx_ctrl_actions[] =
 	{ "VI       ",  1 << RETRO_DEVICE_ID_JOYPAD_R },
 	{ "RUN      ",  1 << RETRO_DEVICE_ID_JOYPAD_START },
 	{ "SELECT   ",  1 << RETRO_DEVICE_ID_JOYPAD_SELECT },
-	{ "2 / 6 BTN",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
+//	{ "2 / 6 BTN",  1 << RETRO_DEVICE_ID_JOYPAD_L2 },
 	{ NULL,       0 }
 };
 
