@@ -61,7 +61,8 @@ beetle-ngp_CORE = mednafen_ngp_libretro.so
 
 beetle-supergrafx_REPO = https://github.com/libretro/beetle-supergrafx-libretro
 beetle-supergrafx_CORE = mednafen_supergrafx_libretro.so
-# beetle-supergrafx_REVISION = b73fa3556343ab410f253fac822ec8d7d6e42fc9 # known good revision
+# use known good revision before 6-button patches
+beetle-supergrafx_REVISION = f97cec678464dcb34d67493eb5edf8c505f4d10c
 
 bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
 
