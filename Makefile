@@ -29,7 +29,7 @@ ifeq "$(GIT_VER_GTE2_26)" "1"
 endif
 
 # Extra cores that build
-# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx beetle-vb
+# EXTRA_CORES += mame2003_plus snes9x2005_plus snes9x2005 genesis-plus-gx beetle-vb fbalpha2012_neogeo
 CORES = gambatte gpsp fceumm pcsx_rearmed picodrive pokemini mgba mgba_sgb smsplus-gx beetle-pce-fast nxengine mednafen_supafaust
 CORES+= fake-08 prboom beetle-ngp beetle-supergrafx mame2000 xrick $(EXTRA_CORES)
 
@@ -68,6 +68,8 @@ bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
 
 fbalpha2012_BUILD_PATH = cores/fbalpha2012/svn-current/trunk
 fbalpha2012_MAKEFILE = makefile.libretro
+
+fbalpha2012_neogeo_REPO = https://github.com/anzz1/fbalpha2012_neogeo
 
 fceumm_REPO = https://github.com/libretro/libretro-fceumm
 fceumm_MAKEFILE = Makefile.libretro
