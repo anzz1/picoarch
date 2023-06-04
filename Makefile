@@ -71,6 +71,10 @@ fbalpha2012_MAKEFILE = makefile.libretro
 
 fbalpha2012_neogeo_REPO = https://github.com/anzz1/fbalpha2012_neogeo
 
+fbalpha2012_cps1_REVISION = c314f4c9f1d4d4482bf9ff2d4807d20960e79cad
+
+fbalpha2012_cps2_REVISION = 0fb34a633119ea3119532a03d79f6f2687ab5e52
+
 fceumm_REPO = https://github.com/libretro/libretro-fceumm
 fceumm_MAKEFILE = Makefile.libretro
 # fceumm_REVISION = 154ee559c0d5c592d2f5fc06380b94b7516ab899 # known good revision
