@@ -4,6 +4,7 @@
 #include "overrides/beetle-supergrafx.h"
 #include "overrides/bluemsx.h"
 #include "overrides/fake-08.h"
+#include "overrides/fbalpha2012_neogeo.h"
 #include "overrides/fceumm.h"
 #include "overrides/fmsx.h"
 #include "overrides/gambatte.h"
@@ -32,6 +33,7 @@ static const struct core_override overrides[] = {
 	beetle_supergrafx_overrides,
 	bluemsx_overrides,
 	fake_08_overrides,
+	fbalpha2012_neogeo_overrides,
 	fceumm_overrides,
 	fmsx_overrides,
 	gambatte_overrides,

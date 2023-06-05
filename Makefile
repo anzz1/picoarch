@@ -217,7 +217,7 @@ cores/$(1):
 	mkdir -p cores
 	$(if $($1_REVISION),cd cores && git init $(1) && cd $(1) && git remote add origin $$($(1)_REPO) && git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin $($1_REVISION) && git reset --hard FETCH_HEAD && git submodule sync --recursive && git submodule update --init --depth=1 $(GIT_SINGLE_BRANCH) --recursive,cd cores && git clone --depth=1 --recurse-submodules --shallow-submodules $$($(1)_REPO) $(1))
 	(test ! -d patches/$(1)) || (cd cores/$(1) && $(foreach patch, $(sort $(wildcard patches/$(1)/*.patch)), $(PATCH) -p1 < ../../$(patch) &&) true)
-	# using ../../patches assumes BUILD_PATH is cores/$(1)
+	# using ../../patches assumes that patch basepath is cores/$(1), not BUILD_PATH
 
 $(1): cores/$(1)
 
