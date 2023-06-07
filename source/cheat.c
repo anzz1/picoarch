@@ -113,6 +113,8 @@ static int parse_cheats(struct cheats *cheats, FILE *file) {
 				if (len == 0)
 					continue;
 
+				if (cheat->name)
+					free(cheat->name);
 				cheat->name = calloc(len+1, sizeof(char));
 				if (!cheat->name)
 					goto finish;
@@ -120,7 +122,7 @@ static int parse_cheats(struct cheats *cheats, FILE *file) {
 				strncpy((char *)cheat->name, buf, len);
 				string_truncate((char *)cheat->name, MAX_DESC_LEN);
 
-				if (len >= MAX_DESC_LEN) {
+				if (len >= MAX_DESC_LEN && !cheat->info) {
 					cheat->info = calloc(len+1, sizeof(char));
 					if (!cheat->info)
 						goto finish;
@@ -139,6 +141,8 @@ static int parse_cheats(struct cheats *cheats, FILE *file) {
 				if (len == 0)
 					continue;
 
+				if (cheat->code)
+					free(cheat->code);
 				cheat->code = calloc(len+1, sizeof(char));
 				if (!cheat->code)
 					goto finish;
@@ -150,6 +154,25 @@ static int parse_cheats(struct cheats *cheats, FILE *file) {
 					PA_WARN("Couldn't parse cheat %d enabled\n", index);
 					continue;
 				}
+			} else if (strstr(ptr, "_info")) {
+				ptr = find_val(ptr);
+				if (!ptr || parse_string(ptr, buf, sizeof(buf))) {
+					PA_WARN("Couldn't parse cheat %d info\n", index);
+					continue;
+				}
+
+				len = strlen(buf);
+				if (len == 0)
+					continue;
+
+				if (cheat->info)
+					free(cheat->info);
+				cheat->info = calloc(len+1, sizeof(char));
+				if (!cheat->info)
+					goto finish;
+
+				strncpy((char *)cheat->info, buf, len);
+				string_wrap((char *)cheat->info, MAX_LINE_LEN, MAX_LINES);
 			}
 		}
 	} while(1);
