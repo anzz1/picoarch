@@ -98,7 +98,7 @@ static int parse_cheats(struct cheats *cheats, FILE *file) {
 			size_t len;
 			sscanf(ptr, "cheat%d", &index);
 
-			if (index >= cheats->count)
+			if (index < 0 || index >= cheats->count)
 				continue;
 			cheat = &cheats->cheats[index];
 
