@@ -3,7 +3,7 @@
 static const struct core_override_option gambatte_core_option_overrides[] = {
 	{
 		.key = "gambatte_gb_colorization",
-		.default_value = "internal",
+		.default_value = "auto",
 		.info = "'Auto' selects the 'best' palette. 'Internal' uses 'Internal Palette' option. 'Custom' loads user palette from system directory.",
 	},
 	{
