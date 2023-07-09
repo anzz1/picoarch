@@ -192,7 +192,7 @@ libpicofe/.patched:
 	cd libpicofe && $(PATCH) -p1 < ../patches/libpicofe/0001-key-combos.patch && touch .patched
 
 clean-libpicofe:
-	test ! -f libpicofe/.patched || (cd libpicofe && $(PATCH) -p1 -R < ../patches/libpicofe/0001-key-combos.patch && rm .patched)
+	test ! -f libpicofe/.patched || (cd libpicofe && $(PATCH) -p1 -R < ../patches/libpicofe/0001-key-combos.patch && rm -f .patched)
 
 plat_miyoomini.o: plat_sdl.c
 plat_trimui.o: plat_sdl.c
