@@ -30,7 +30,7 @@ static const struct core_override_option mame2000_core_option_overrides[] = {
 	},
 	{
 		.key = "mame2000-sample_rate",
-		.default_value = "22050",
+		.default_value = "32000",
 		.retro_var_value = "Snd. Rate (Restart); 11025|22050|32000|44100"
 	},
 	{
